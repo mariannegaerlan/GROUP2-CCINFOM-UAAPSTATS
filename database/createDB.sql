@@ -78,4 +78,25 @@ CREATE TABLE match_record_management(
     (4,'2026-10-28','NU','ADMU','ADMU',69,65,1,18,'Smart Araneta Coliseum','Round 2',89),
     (5,'2026-10-25','UST','DLSU','DLSU',92,80,1,28,'Smart Araneta Coliseum','Round 2',89);
 
+CREATE TABLE player_record_management(
+    playerID INT PRIMARY KEY,
+    jersey_num INT(2),
+    schoolCode VARCHAR(4),
+    last_name VARCHAR(16),
+    first_name VARCHAR(14),
+    age INT(2),
+    total_points INT(2),
+    total_rebounds INT(2),
+    total_assists INT(2),
+    total_blocks INT(2),
+    total_steals INT(2),
+    minutes_played TIME,
+    player_status Enum('Bench', 'Active', 'Injured', 'Suspended'),
+    CONSTRAINT fk_player_school FOREIGN KEY (schoolCode) REFERENCES team_record_management(schoolCode)
+);
+
+INSERT INTO player_record_management(playerID, jersey_num, schoolCode, last_name, first_name, age, total_points, total_rebounds, total_assists, total_blocks, total_steals, minutes_played, player_status)
+VALUES
+    (1, 9, 'DLSU', 'Pablo', 'Luis', 25, 10, 2, 5, 3, 4, '00:34:10', 'Active'),
+    (2, 11, 'DLSU', 'Cortez', 'Jacob', 24, 13, 4, 5, 1, 3, '00:28:39', 'Active');
 
