@@ -17,6 +17,7 @@ public class player {
     }
     private int playerID;
     private int jersey_num;
+    private String schoolCode;
     private String last_name;
     private String first_name;
     private int age;
@@ -31,9 +32,10 @@ public class player {
 
 
     //Constructor
-    public player(int playerID,int jersey_num, String last_name, String first_name, int age, int total_points, int total_rebounds, int total_assists, int total_blocks, int total_steals, Time minutes_played, PlayerStatus playerStatus) {
+    public player(int playerID,int jersey_num, String schoolCode, String last_name, String first_name, int age, int total_points, int total_rebounds, int total_assists, int total_blocks, int total_steals, Time minutes_played, PlayerStatus playerStatus) {
         this.playerID = playerID;
         this.jersey_num = jersey_num;
+        this.schoolCode = schoolCode;
         this.first_name = first_name;
         this.last_name = last_name;
         this.age = age;
@@ -49,6 +51,9 @@ public class player {
     //getters
     public int getPlayerID() {
         return playerID;
+    }
+    public String getSchoolCode() {
+        return schoolCode;
     }
 
     public String getFirstName() {
@@ -106,7 +111,9 @@ public class player {
             throw new IllegalArgumentException ("Data can't be negative or zero");
         }
     }
-
+    public void setSchoolCode(String schoolCode) {
+        this.schoolCode = schoolCode;
+    }
     public void setFirstName(String first_name) {
         this.first_name = first_name;
     }
@@ -205,13 +212,13 @@ public class player {
 
     public void displayPlayerInfo()
     {
-        System.out.println("Player ID:" + this.playerID + "| Last Name: " + this.last_name + "| First Name: " + this.first_name + "| Jersey Number: " + this.jersey_num + "| Age: " + this.age + "| Total Points: " + this.total_points + "| Total Rebounds: " + this.total_rebounds + "| Total Assists: " + this.total_assists + "| Total Blocks: " + this.total_blocks + "| Total Steals: " + this.total_steals + "| Minutes Played: " + this.minutes_played + "| Player Status: " + this.playerStatus);
+        System.out.println("Player ID:" + this.playerID + "|School Code: " + this.schoolCode + "| Last Name: " + this.last_name + "| First Name: " + this.first_name + "| Jersey Number: " + this.jersey_num + "| Age: " + this.age + "| Total Points: " + this.total_points + "| Total Rebounds: " + this.total_rebounds + "| Total Assists: " + this.total_assists + "| Total Blocks: " + this.total_blocks + "| Total Steals: " + this.total_steals + "| Minutes Played: " + this.minutes_played + "| Player Status: " + this.playerStatus);
     }
     // database connection
 
     private static final String DB_URL = System.getenv().getOrDefault("DB_URL","jdbc:mysql://localhost:3306/uaapstats");
     private static final String USER = System.getenv().getOrDefault("DB_USER","root");
-    private static final String PASSWORD = System.getenv().getOrDefault("DB_PASSWORD","");
+    private static final String PASSWORD = System.getenv().getOrDefault("DB_PASSWORD","tomemyxmen1997");
 
     private static Connection conn = null;
 
@@ -265,6 +272,7 @@ public class player {
             player p = new player(
                 rs.getInt("playerID"),
                 rs.getInt("jersey_num"),
+                rs.getString("schoolCode"),
                 rs.getString("last_name"),
                 rs.getString("first_name"),
                 rs.getInt("age"),
