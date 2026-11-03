@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "player",
+            "request": "launch",
+            "mainClass": "model.player",
+            "projectName": "GROUP2-CCINFOM-UAAPSTATS_7b7fb245"
+        },
+        {
+            "type": "java",
             "name": "coach",
             "request": "launch",
             "mainClass": "model.coach",

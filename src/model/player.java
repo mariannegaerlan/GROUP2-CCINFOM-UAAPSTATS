@@ -263,7 +263,7 @@ public class player {
             player.PlayerStatus status = player.PlayerStatus.valueOf(statusStr);
 
             player p = new player(
-                rs.getInt("player_ID"),
+                rs.getInt("playerID"),
                 rs.getInt("jersey_num"),
                 rs.getString("last_name"),
                 rs.getString("first_name"),
