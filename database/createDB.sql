@@ -58,7 +58,7 @@ CREATE TABLE match_record_management(
     top_scorer INT, 
     total_points INT, 
     venue VARCHAR(35),
-	match_round Enum('Roun1','Round 2','Semi-Finals','Battle for third','Championship'), 
+	match_round Enum('Round 1','Round 2','Semi-Finals','Battle for third','Championship'), 
     season INT );
     
     INSERT INTO match_record_management(match_ID, match_date, home_teamcode, away_teamcode, winner_teamcode, away_score, home_score, 
