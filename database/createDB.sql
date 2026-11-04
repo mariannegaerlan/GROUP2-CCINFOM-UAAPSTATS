@@ -60,11 +60,9 @@ CREATE TABLE match_record_management(
     match_date DATE, 
     home_teamcode VARCHAR(4), 
     away_teamcode VARCHAR(4),
-    winner_teamcode VARCHAR(4), 
     away_score INT, 
     home_score INT,
     top_scorer INT, 
-    total_points INT, 
     venue VARCHAR(35),
 	match_round Enum('Round1','Round 2','Semi-Finals','Battle for third','Championship'), 
     season INT );
@@ -72,11 +70,11 @@ CREATE TABLE match_record_management(
     INSERT INTO match_record_management(match_ID, match_date, home_teamcode, away_teamcode, winner_teamcode, away_score, home_score, 
     top_scorer, total_points, venue, match_round, season) VALUES 
     
-    (1,'2026-10-31','ADMU','DLSU','DLSU',76,73,13,21,'Smart Araneta Coliseum','Round 2',89),
-    (2,'2026-10-31','NU','UST','NU',71,75,30,16,'Smart Araneta Coliseum','Round 2',89),
-    (3,'2026-10-28','ADU','FEU','FEU',73,66,25,14,'Smart Araneta Coliseum','Round 2',89),
-    (4,'2026-10-28','NU','ADMU','ADMU',69,65,1,18,'Smart Araneta Coliseum','Round 2',89),
-    (5,'2026-10-25','UST','DLSU','DLSU',92,80,1,28,'Smart Araneta Coliseum','Round 2',89);
+    (1,'2026-10-31','ADMU','DLSU',76,73,13,'Smart Araneta Coliseum','Round 2',89),
+    (2,'2026-10-31','NU','UST',71,75,30,'Smart Araneta Coliseum','Round 2',89),
+    (3,'2026-10-28','ADU','FEU',73,66,25,'Smart Araneta Coliseum','Round 2',89),
+    (4,'2026-10-28','NU','ADMU',69,65,1,'Smart Araneta Coliseum','Round 2',89),
+    (5,'2026-10-25','UST','DLSU',92,80,1,'Smart Araneta Coliseum','Round 2',89);
 
 CREATE TABLE player_record_management(
     playerID INT PRIMARY KEY,
