@@ -218,7 +218,7 @@ public class player {
 
     private static final String DB_URL = System.getenv().getOrDefault("DB_URL","jdbc:mysql://localhost:3306/uaapstats");
     private static final String USER = System.getenv().getOrDefault("DB_USER","root");
-    private static final String PASSWORD = System.getenv().getOrDefault("DB_PASSWORD","tomemyxmen1997");
+    private static final String PASSWORD = System.getenv().getOrDefault("DB_PASSWORD","");
 
     private static Connection conn = null;
 
