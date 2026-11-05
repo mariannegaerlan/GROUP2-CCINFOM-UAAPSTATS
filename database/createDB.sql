@@ -56,17 +56,22 @@ monthly_salary, career_championships, coach_status) VALUES
 ( 'DLSU', 'Pumaren', 'Franz', '1998-02-21', '2001-12-31', 100000, 3, 'Retired' ); -- DLSU
 
 CREATE TABLE match_record_management(
-	match_ID INT PRIMARY KEY, 
-    match_date DATE, 
-    home_teamcode VARCHAR(4), 
-    away_teamcode VARCHAR(4),
-    away_score INT, 
-    home_score INT,
-    top_scorer INT, 
-    venue VARCHAR(35),
-	match_round Enum('Round1','Round 2','Semi-Finals','Battle for third','Championship'), 
-    season INT );
-    
+	match_ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
+    match_date DATE DEFAULT NULL, 
+    home_teamcode VARCHAR(4) NOT NULL DEFAULT '', 
+    away_teamcode VARCHAR(4) NOT NULL DEFAULT '',
+    away_score INT NOT NULL DEFAULT 0, 
+    home_score INT NOT NULL DEFAULT 0,
+    top_scorer INT NOT NULL DEFAULT 0, 
+    venue VARCHAR(35) NOT NULL DEFAULT '',
+	match_round Enum('Round1','Round 2','Semi-Finals','Battle for third','Championship') NOT NULL DEFAULT 'Round1', 
+    season INT DEFAULT 0,
+	CONSTRAINT fk_top_scorer FOREIGN KEY (top_scorer) REFERENCES player_record_management(playerID),
+	CONSTRAINT fk_home_teamcode FOREIGN KEY (home_teamcode) REFERENCES team_record_management(schoolCode), 
+	CONSTRAINT fk_away_teamcode FOREIGN KEY (away_teamcode) REFERENCES team_record_management(schoolCode)
+	);
+
+	
     INSERT INTO match_record_management(match_ID, match_date, home_teamcode, away_teamcode, winner_teamcode, away_score, home_score, 
     top_scorer, total_points, venue, match_round, season) VALUES 
     
