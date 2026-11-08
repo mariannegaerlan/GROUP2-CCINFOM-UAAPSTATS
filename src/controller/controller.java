@@ -37,6 +37,34 @@ public class controller
     // method for viewing with filter: viewing the newest schools that entered the league after 1938 (founding year)
 
     // player record management
+	public void player_record_view(){
+		String query = "SELECT * " +
+		"FROM player_record_management";
+
+		try{
+			PreparedStatement pstmt = connection.prepareStatement(query);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while(rs.next){
+				System.out.println(rs.getInt("playerID"));
+				System.out.println(rs.getInt("jersey_num"));
+				System.out.println(rs.getString("schoolCode"));
+				System.out.println(rs.getString("last_name"));
+				System.out.println(rs.getString("first_name"));
+				System.out.println(rs.getInt("age"));
+				System.out.println(rs.getInt("total_points"));
+				System.out.println(rs.getInt("tota_rebounds"));
+				System.out.println(rs.getInt("total_assists"));
+				System.out.println(rs.getInt("total_blocks"));
+				System.out.println(rs.getInt("total_steals"));
+				System.out.println(rs.getString("minutes_player"));
+				System.out.println(rs.getString("playerStatus"));
+			} catch(SQLException e){
+				e.printStackTrace();
+			}
+		}
+	}
     // method for viewing with filter: viewing players with the highest number of stats for MVP leaderboard per season
     // method for viewing with filter: viewing injured players
 
