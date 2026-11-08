@@ -8,6 +8,30 @@ public class controller
 
     // viewing with filter 
     // team record management
+	public void team_record_view(){
+		//Select query
+		String query = "SELECT * " +
+		"FROM team_record_management";
+
+		try{
+			PreparedStatement pstmt = connection.prepareStatement(query);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while(rs.next){
+				System.out.println(rs.getString("schoolCode"));
+				System.out.println(rs.getString("team_name"));
+				System.out.println(rs.getInt("year"));
+				System.out.println(rs.getInt("coach_ID"));
+				System.out.println(rs.getInt("team_championships"));
+			}
+
+			rs.close();
+			pstmt.close();
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
     // method for viewing with filter: top 3 schools with most championships
 
     // method for viewing with filter: viewing the newest schools that entered the league after 1938 (founding year)
@@ -56,13 +80,13 @@ public class controller
 		"NULLIN(COUNT(DISTINCT m.match_ID), 0), 2) AS win_rate " +
 
 		//joining the tables needed
-		"FROM team t " +
-		"INNER JOIN `match` m " +
+		"FROM team_record_management t " +
+		"INNER JOIN match_record_management m " +
 		"ON t.schoolCode = m.home_teamcode " +
 		"OR t.schoolCode = m.away_teamcode " +
 
 		//Filtering based on year
-		"WHERE YEAR(m.date) = ? " +
+		"WHERE YEAR(m.match_date) = ? " +
 
 		//For the aggregate functions
 		"GROUP BY t.schoolCode, t.team_name";
@@ -77,10 +101,10 @@ public class controller
 			while(rs.next()){
 				System.out.println(rs.getString("schoolCode"));
 				System.out.println(rs.getString("team_name"));
-				System.out.println(rs.getString("total_matches"));
-				System.out.println(rs.getString("wins"));
-				System.out.println(rs.getString("losses"));
-				System.out.println(rs.getString("win_rate"));
+				System.out.println(rs.getInt("total_matches"));
+				System.out.println(rs.getInt("wins"));
+				System.out.println(rs.getInt("losses"));
+				System.out.println(rs.getDouble("win_rate"));
 			}
 
 			rs.close();
