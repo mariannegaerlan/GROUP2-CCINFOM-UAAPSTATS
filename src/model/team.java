@@ -99,7 +99,7 @@ public class team {
 
 	private static final String DB_URL = System.getnev().getOrDefault("DB_URL","jdbc:mysql://localhost:3306/uaapstats");
 	private static final String USER = System.getenv().getOrDefault("DB_USER","root");
-    private static final String PASSWORD = System.getenv().getOrDefault("DB_PASSWORD","p@ssword");
+    private static final String PASSWORD = System.getenv().getOrDefault("DB_PASSWORD","");
 
     private static Connection conn = null;
 
