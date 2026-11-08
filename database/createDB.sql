@@ -72,8 +72,8 @@ CREATE TABLE match_record_management(
 	);
 
 	
-    INSERT INTO match_record_management(match_ID, match_date, home_teamcode, away_teamcode, winner_teamcode, away_score, home_score, 
-    top_scorer, total_points, venue, match_round, season) VALUES 
+    INSERT INTO match_record_management(match_ID, match_date, home_teamcode, away_teamcode, away_score, home_score, 
+    top_scorer, venue, match_round, season) VALUES 
     
     (1,'2026-10-31','ADMU','DLSU',76,73,13,'Smart Araneta Coliseum','Round 2',89),
     (2,'2026-10-31','NU','UST',71,75,30,'Smart Araneta Coliseum','Round 2',89),
