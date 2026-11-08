@@ -6,11 +6,11 @@ SELECT * FROM coach_record_management;
 
 
 CREATE TABLE team_record_management(
-    schoolCode VARCHAR(4) PRIMARY KEY,
-    team_name VARCHAR(35),
-    year INT(6),
-    coach_ID INT,
-    team_championships INT
+    schoolCode VARCHAR(4) PRIMARY KEY DEFAULT '',
+    team_name VARCHAR(35) NOT NULL DEFAULT '',
+    year INT(6) NOT NULL,
+    coach_ID INT NOT NULL DEFAULT 0,
+    team_championships INT DEFAULT 0
 );
 
 INSERT INTO team_record_management(schoolCode, team_name, year, coach_ID, team_championships)
