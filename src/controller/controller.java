@@ -30,6 +30,66 @@ public class controller
 
     // reports management
     // method for team performance report
+    	public void team_performance_report(int year){
+		//Select statement for school code + team name coloumns
+		String query = "SELECT " +
+		"t.schoolCode, t.team_name, " +
+		"COUNT(DISTINCT m.match_ID AS total_matches, " + //gets the total matches
+
+		//Computes for total wins
+		"SUM(CASE " +
+		"WHEN (m.home_teamcode = t.schoolCode AND m.home_score > m.away_score) " +
+		"OR (m.away_teamcode = t.schoolCode AND m.away_score > m.home_score) " +
+		"THEN 1 ELSE 0 END) AS wins, " +
+
+		//computs for total loses
+		"SUM(CASE " +
+		"WHEN (m.home_teamcode = t.schoolCode AND m.home_score < m.away_score) " +
+		"OR (m.away_teamcode = t.schoolCode AND m.away_score < m.home_score) " +
+		"THEN 1 ELSE 0 END) AS loses, " +
+
+		//Computes for win rate
+		"ROUND(SUM(CASE " +
+		"WHEN (m.home_teamcode = t.schoolCode AND m.home_score > m.away_score) " +
+		"OR (m.away_teamcode = t.schoolCode AND m.away_score > m.home_score) " +
+		"THEN 1 ELSE 0 END) * 100.0 / " +
+		"NULLIN(COUNT(DISTINCT m.match_ID), 0), 2) AS win_rate " +
+
+		//joining the tables needed
+		"FROM team t " +
+		"INNER JOIN `match` m " +
+		"ON t.schoolCode = m.home_teamcode " +
+		"OR t.schoolCode = m.away_teamcode " +
+
+		//Filtering based on year
+		"WHERE YEAR(m.date) = ? " +
+
+		//For the aggregate functions
+		"GROUP BY t.schoolCode, t.team_name";
+
+		try{
+			PreparedStatement pstmt = connection.prepareStatement(query);
+
+			pstmt.setInt(1, year);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while(rs.next()){
+				System.out.println(rs.getString("schoolCode"));
+				System.out.println(rs.getString("team_name"));
+				System.out.println(rs.getString("total_matches"));
+				System.out.println(rs.getString("wins"));
+				System.out.println(rs.getString("losses"));
+				System.out.println(rs.getString("win_rate"));
+			}
+
+			rs.close();
+			pstmt.close();
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+
 
     // method for top scorer per round report
 
