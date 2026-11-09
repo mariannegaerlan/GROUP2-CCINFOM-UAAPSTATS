@@ -1,10 +1,10 @@
 package model;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
@@ -211,10 +211,105 @@ public class coach {
         System.out.println(e.getMessage());
     }
 
-
     return coaches;
 
    }
+
+   	public void coach_record_view(){
+		String query = "SELECT * " +
+		"FROM coach_record_management";
+
+		try{
+			PreparedStatement pstmt = conn.prepareStatement(query);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while(rs.next()){
+				System.out.println(rs.getString("schoolCode"));
+				System.out.println(rs.getString("last_name"));
+				System.out.println(rs.getString("first_name"));
+				System.out.println(rs.getString("contract_start"));
+				System.out.println(rs.getString("contract_end"));
+				System.out.println(rs.getDouble("monthly_salary"));
+				System.out.println(rs.getInt("career_championships"));
+				System.out.println(rs.getString("coach_status"));
+			} catch(SQLException e){
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public boolean coach_record_insert(int coach_ID, String schoolCode, String last_name, String first_name, LocalDate contract_start, LocalDate contract_end, double monthly_salary, int career_championships, coach_status coachStatus)
+	{
+
+		String query = "INSERT INTO coach_record_management(coach_ID,  schoolCode,  last_name,  first_name,  contract_start,  contract_end,  monthly_salary,  career_championships,  coach_status) VALUES (?,?,?,?,?, ?,?,?,?)";
+
+		try
+		{
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, coach_ID);
+			pstmt.setString(2, schoolCode);
+			pstmt.setString(3, last_name);
+			pstmt.setString(4, first_name);
+			pstmt.setDate(5, java.sql.Date.valueOf(contract_start));
+			pstmt.setDate(6, java.sql.Date.valueOf(contract_end));
+			pstmt.setDouble(7, monthly_salary);
+			pstmt.setInt(8, career_championships);
+			pstmt.setString(9, coachStatus.name());
+
+            return pstmt.executeUpdate() > 0;
+
+
+		} catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+	}
+	public static boolean coach_record_delete(int coach_ID)
+	{
+
+		String query = "DELETE FROM coach_record_management WHERE coach_ID = ?";
+
+		try
+		{
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, coach_ID);
+            return pstmt.executeUpdate() > 0;
+
+
+		} catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+	}
+	public boolean coach_record_update(String schoolCode, String last_name, String first_name, LocalDate contract_start, LocalDate contract_end, double monthly_salary, int career_championships, coach_status coachStatus)
+	{
+		String query = "UPDATE coach_record_management SET schoolCode = ?, last_name = ?, first_name = ? ,contract_start = ?, contract_end = ?, monthly_salary = ?, career_championships = ?, coach_status = ? WHERE coachID = ?";
+
+		try
+		{
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, schoolCode);
+			pstmt.setString(2, last_name);
+			pstmt.setString(3, first_name);
+			pstmt.setDate(4, java.sql.Date.valueOf(contract_start));
+			pstmt.setDate(5, java.sql.Date.valueOf(contract_end));
+			pstmt.setDouble(6, monthly_salary);
+			pstmt.setInt(7, career_championships);
+			pstmt.setString(8, coachStatus.name());
+            pstmt.setInt(9, this.coach_ID);
+
+            return pstmt.executeUpdate() > 0;
+
+
+		} catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+	}
 
 // main
    public static void main(String[] args)

@@ -1,6 +1,7 @@
 package model;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
@@ -296,6 +297,117 @@ public class player {
     return players;
 
    }
+    // CRUD operations
+
+	public void player_record_view(){
+		String query = "SELECT * " +
+		"FROM player_record_management";
+
+		try{
+			PreparedStatement pstmt = connection.prepareStatement(query);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while(rs.next()){
+				System.out.println(rs.getInt("playerID"));
+				System.out.println(rs.getInt("jersey_num"));
+				System.out.println(rs.getString("schoolCode"));
+				System.out.println(rs.getString("last_name"));
+				System.out.println(rs.getString("first_name"));
+				System.out.println(rs.getInt("age"));
+				System.out.println(rs.getInt("total_points"));
+				System.out.println(rs.getInt("tota_rebounds"));
+				System.out.println(rs.getInt("total_assists"));
+				System.out.println(rs.getInt("total_blocks"));
+				System.out.println(rs.getInt("total_steals"));
+				System.out.println(rs.getString("minutes_played"));
+				System.out.println(rs.getString("player_status"));
+			} catch(SQLException e){
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public boolean player_record_insert(int playerID, int jersey_num, String schooLCode, String last_name, String first_name,
+         int age, int total_points, int total_rebounds, int total_assists, int total_blocks, int total_steals, Time minutes_played, PlayerStatus playerStatus)
+	{
+
+		String query = "INSERT INTO player_record_management( playerID,  jersey_num,  schooLCode,  last_name,  first_name,  age,  total_points,  total_rebounds,  total_assists,  total_blocks,  total_steals,  minutes_played,  player_status) VALUES (?,?,?,?,?, ?,?,?,?,?, ?,?,?)";
+
+		try
+		{
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, playerID);
+			pstmt.setInt(2, jersey_num);
+			pstmt.setString(3, schooLCode);
+			pstmt.setString(4, last_name);
+			pstmt.setString(5, first_name);
+			pstmt.setInt(6, age);
+			pstmt.setInt(7, total_points);
+			pstmt.setInt(8, total_rebounds);
+			pstmt.setInt(9, total_assists);
+			pstmt.setInt(10, total_blocks);
+			pstmt.setInt(11, total_steals);
+			pstmt.setTime(12, minutes_played);
+			pstmt.setString(13, playerStatus.name());
+            pstmt.setInt(14, this.playerID);
+            return pstmt.executeUpdate() > 0;
+
+
+		} catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+	}
+	public static boolean player_record_delete(int playerID)
+	{
+
+		String query = "DELETE FROM player_record_management WHERE playerID = ?";
+
+		try
+		{
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, playerID);
+            return pstmt.executeUpdate() > 0;
+
+
+		} catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+	}
+	public boolean player_record_update(int jersey_num, String schooLCode, String last_name, String first_name,
+         int age, int total_points, int total_rebounds, int total_assists, int total_blocks, int total_steals, Time minutes_played, PlayerStatus playerStatus)
+	{
+		String query = "UPDATE player_record_management SET jersey_num = ?, schoolCode = ?, last_name = ? , first_name = ?, age = ?, total_points = ?, total_rebounds = ? ,total_assists = ? ,total_blocks = ? ,total_steals = ?, minutes_played = ?, player_status = ? WHERE playerID = ?";
+
+		try
+		{
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, jersey_num);
+			pstmt.setString(2, schooLCode);
+			pstmt.setString(3, last_name);
+			pstmt.setString(4, first_name);
+			pstmt.setInt(5, age);
+			pstmt.setInt(6, total_points);
+			pstmt.setInt(7, total_rebounds);
+			pstmt.setInt(8, total_assists);
+			pstmt.setInt(9, total_blocks);
+			pstmt.setInt(10, total_steals);
+			pstmt.setTime(11, minutes_played);
+			pstmt.setString(12, playerStatus.name());
+            return pstmt.executeUpdate() > 0;
+
+
+
+		} catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+	}
 
 // main
    public static void main(String[] args)
