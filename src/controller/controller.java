@@ -69,6 +69,29 @@ public class controller
     // method for viewing with filter: viewing injured players
 
     // match record manageemnt
+	public void match_record_view(){
+		String query = "SELECT * " +
+		"FROM match_record_management";
+
+		try{
+			PreparedStatement pstmt = connection.prepareStatement(query);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while(rs.next()){
+				System.out.println(rs.getInt("match_ID"));
+				System.out.println(rs.getDate("match_date"));
+				System.out.println(rs.getString("home_teamcode"));
+				System.out.println(rs.getString("away_teamcode"));
+				System.out.println(rs.getInt("away_score"));
+				System.out.println(rs.getInt("home_score"));
+				System.out.println(rs.getInt("top_scorer"));
+				System.out.println(rs.getString("venue"));
+				System.out.println(rs.getString("match_round"));
+				System.out.println(rs.getInt("season"));
+			}
+		}
+	}
 
     // method for viewing with filter: viewing games with a common player that scored the most points
     // method for viewing with filter: viewing games based in MOA
