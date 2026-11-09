@@ -18,7 +18,7 @@ public class controller
 
 			ResultSet rs = pstmt.executeQuery();
 
-			while(rs.next){
+			while(rs.next()){
 				System.out.println(rs.getString("schoolCode"));
 				System.out.println(rs.getString("team_name"));
 				System.out.println(rs.getInt("year"));
@@ -46,7 +46,7 @@ public class controller
 
 			ResultSet rs = pstmt.executeQuery();
 
-			while(rs.next){
+			while(rs.next()){
 				System.out.println(rs.getInt("playerID"));
 				System.out.println(rs.getInt("jersey_num"));
 				System.out.println(rs.getString("schoolCode"));
@@ -74,6 +74,29 @@ public class controller
     // method for viewing with filter: viewing games based in MOA
 
     // coach record management
+	public void coach_record_view(){
+		String query = "SELECT * " +
+		"FROM coach_record_management";
+
+		try{
+			PreparedStatement pstmt = connection.prepareStatement(query);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while(rs.next()){
+				System.out.println(rs.getString("schoolCode"));
+				System.out.println(rs.getString("last_name"));
+				System.out.println(rs.getString("first_name"));
+				System.out.println(rs.getString("contract_start"));
+				System.out.println(rs.getString("contract_end"));
+				System.out.println(rs.getDouble("monthly_salary"));
+				System.out.println(rs.getInt("career_championships"));
+				System.out.println(rs.getString("coach_status"));
+			} catch(SQLException e){
+				e.printStackTrace
+			}
+		}
+	}
     // method for viewing with filter: viewing suspended coaches
     // method for viewing with filter: viewing coaches with high monthly salaries
     // method for viewing with filter: viewing coaches whose contracts started in the last 5 years
