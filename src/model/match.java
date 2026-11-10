@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.LocalDate;
+import java.time.LocalDate;
 
 public class match{
 
@@ -159,7 +159,7 @@ public class match{
     	List<match> matches = new ArrayList<>();
 
     	try{
-    		if(conn = null || conn.isClosed()){
+    		if(conn == null || conn.isClosed()){
     			if(!connectDB()){
     				return matches;
     			}
@@ -259,7 +259,7 @@ public class match{
 		}
 	}
 
-	public boolean coach_record_update(int match_ID, Date match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, String venue, Round round, int season){
+	public boolean match_record_update(int match_ID, Date match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, String venue, Round round, int season){
 		String query = "UPDATE match_record_management SET match_ID = ?, match_date = ?m home_teamcode = ?, away_teamcode = ?, away_score = ?, home_teamcode = ?, top_scorer = ?, venue = ?, round = ?, season = ?";
 
 		try{
