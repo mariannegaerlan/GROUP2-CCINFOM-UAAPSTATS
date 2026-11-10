@@ -6,7 +6,6 @@ import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 
-/** Basic shared styles. Add more styling here as the interface develops. */
 public final class Theme {
     public static final Color DARK = new Color(75, 75, 75);
     public static final Color GRAY = new Color(165, 165, 165);
