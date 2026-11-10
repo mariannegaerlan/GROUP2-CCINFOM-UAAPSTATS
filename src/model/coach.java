@@ -182,7 +182,7 @@ public class coach {
 
 
     try (Statement stmt = conn.createStatement(); 
-        ResultSet rs = stmt.executeQuery(query.toString()))
+        ResultSet rs = stmt.executeQuery(query.toString());
     {
 
         while(rs.next())
