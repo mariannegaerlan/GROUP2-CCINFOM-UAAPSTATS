@@ -1,6 +1,7 @@
 package model;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
@@ -60,7 +61,7 @@ public class team {
 		this.team_name = team_name;
 	}
 
-	public void setYear(int year){
+	public void setYear(int year) throws IllegalAccessException{
 		if(year > 0){
 			this.year = year;
 		}
@@ -70,8 +71,8 @@ public class team {
 		}
 	}
 
-	public void setCoachID(int coach_ID){
-		if(year > 0){
+	public void setCoachID(int coach_ID) throws IllegalAccessException{
+		if(coach_ID > 0){
 			this.coach_ID = coach_ID;
 		}
 
@@ -80,7 +81,7 @@ public class team {
 		}
 	}
 
-	public void setTeamChampionships(int team_championships){
+	public void setTeamChampionships(int team_championships) throws IllegalAccessException{
 		if(year >= 0){
 			this.team_championships = team_championships;
 		}
@@ -97,7 +98,7 @@ public class team {
 
 	//DB connection
 
-	private static final String DB_URL = System.getnev().getOrDefault("DB_URL","jdbc:mysql://localhost:3306/uaapstats");
+	private static final String DB_URL = System.getenv().getOrDefault("DB_URL","jdbc:mysql://localhost:3306/uaapstats");
 	private static final String USER = System.getenv().getOrDefault("DB_USER","root");
     private static final String PASSWORD = System.getenv().getOrDefault("DB_PASSWORD","");
 
@@ -118,6 +119,7 @@ public class team {
     	}
     }
 
+    // testing for connection
     public static List<team> getAllTeams(){
     	List<team> teams = new ArrayList<>();
 
@@ -130,7 +132,7 @@ public class team {
     	}
     	catch (SQLException e){
     		System.out.println(e.getMessage());
-    		return players;
+    		return teams;
     	}
 
     	StringBuilder query = new StringBuilder("SELECT * FROM team_record_management ");
@@ -153,13 +155,111 @@ public class team {
     	return teams;
     }
 
+
+    // CRUD operations
+
+	public void team_record_view(){
+		//Select query
+		String query = "SELECT * " +
+		"FROM team_record_management";
+
+		try{
+			PreparedStatement pstmt = conn.prepareStatement(query);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while(rs.next()){
+				System.out.println(rs.getString("schoolCode"));
+				System.out.println(rs.getString("team_name"));
+				System.out.println(rs.getInt("year"));
+				System.out.println(rs.getInt("coach_ID"));
+				System.out.println(rs.getInt("team_championships"));
+			}
+
+			rs.close();
+			pstmt.close();
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+
+	public boolean team_record_insert(String schoolCode, String team_name, int year, int coach_ID, int team_championships)
+	{
+
+		String query = "INSERT INTO team_record_management(schoolCode, team_name, year, coach_ID, team_championships) VALUES (?,?,?,?,?)";
+
+		try
+		{
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, schoolCode);
+			pstmt.setString(2, team_name);
+			pstmt.setInt(3, year);
+			pstmt.setInt(4, coach_ID);
+			pstmt.setInt(5, team_championships);
+            System.err.println("Data inserted:");
+            System.out.println("SchoolCode: " + schoolCode + "| team_name: " + team_name + "| year: " + year + "| coach_ID: " + coach_ID + "| team_championships: " + team_championships);
+
+            return pstmt.executeUpdate() > 0;
+
+
+		} catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+	}
+	public static boolean team_record_delete(String schoolCode)
+	{
+
+		String query = "DELETE FROM team_record_management WHERE schoolCode = ?";
+
+		try
+		{
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, schoolCode);
+            System.out.println("Team deleted successfully: " + schoolCode);
+            return pstmt.executeUpdate() > 0;
+
+
+		} catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+	}
+	public boolean team_record_update(String team_name, int year, int coach_ID, int team_championships)
+	{
+		String query = "UPDATE team_record_management SET team_name = ?, year = ?, coach_ID = ? ,team_championships = ? WHERE schoolCode = ?";
+
+		try
+		{
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, team_name);
+			pstmt.setInt(2, year);
+			pstmt.setInt(3, coach_ID);
+			pstmt.setInt(4, team_championships);
+            pstmt.setString(5, this.schoolCode);
+            System.err.println("Data updated:");
+            System.out.println( "team_name: " + team_name + "| year: " + year + "| coach_ID: " + coach_ID + "| team_championships: " + team_championships);
+
+            return pstmt.executeUpdate() > 0;
+
+
+		} catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+	}
+
+
     //main
 
     public static void main(String[] args){
     	List<team> teams = getAllTeams();
 
     	for(team t : teams){
-    		p.displayTeamInfo();
+    		t.displayTeamInfo();
     	} 
     }
 }
