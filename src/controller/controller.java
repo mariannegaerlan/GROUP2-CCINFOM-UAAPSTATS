@@ -4,6 +4,7 @@ import model.player;
 import model.player.PlayerStatus;
 import model.coach;
 import model.coach.coach_status;
+import model.match;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -83,28 +84,26 @@ public class controller
     // method for viewing with filter: viewing injured players
 
     // match record manageemnt
-	public void match_record_view(){
-		String query = "SELECT * " +
-		"FROM match_record_management";
+	public List <match> getAllMatches()
+	{
+		return match.getAllMatches();
+	}
 
-		try{
-			PreparedStatement pstmt = connection.prepareStatement(query);
+	public boolean match_insert(int match_ID, LocalDate match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, String venue, Round round, int season)
+	{
+		match newMatch = new match(match_ID,  match_date,  home_teamcode,  away_teamcode,  away_score,  home_score,  top_scorer,  venue,  round,  season);
+		return newMatch.match_record_insert(match_ID,  match_date,  home_teamcode,  away_teamcode,  away_score,  home_score,  top_scorer,  venue,  round,  season);
+	}
 
-			ResultSet rs = pstmt.executeQuery();
+	public boolean match_delete(int match_ID)
+	{
+		return match.match_record_delete(match_ID);
+	}
 
-			while(rs.next()){
-				System.out.println(rs.getInt("match_ID"));
-				System.out.println(rs.getDate("match_date"));
-				System.out.println(rs.getString("home_teamcode"));
-				System.out.println(rs.getString("away_teamcode"));
-				System.out.println(rs.getInt("away_score"));
-				System.out.println(rs.getInt("home_score"));
-				System.out.println(rs.getInt("top_scorer"));
-				System.out.println(rs.getString("venue"));
-				System.out.println(rs.getString("match_round"));
-				System.out.println(rs.getInt("season"));
-			}
-		}
+	public boolean match_update(int match_ID, LocalDate match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, String venue, Round round, int season)
+	{
+		match newMatch = new match(match_ID,  match_date,  home_teamcode,  away_teamcode,  away_score,  home_score,  top_scorer,  venue,  round,  season);
+		return newMatch.match_record_update(match_date,  home_teamcode,  away_teamcode,  away_score,  home_score,  top_scorer,  venue,  round,  season);
 	}
 
     // method for viewing with filter: viewing games with a common player that scored the most points
