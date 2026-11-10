@@ -46,7 +46,16 @@ public class controller
 
     // method for viewing with filter: top 3 schools with most championships
 
+	public List<team> viewTop3Championships()
+	{
+		return team.viewTop3Championships();
+	}
+
     // method for viewing with filter: viewing the newest schools that entered the league after 1938 (founding year)
+	public List<team> viewNonFounders()
+	{
+		return team.viewNonFounders();
+	}
 
     // player record management
 	public List<player> viewPlayers()
@@ -76,12 +85,21 @@ public class controller
           age,  total_points,  total_rebounds,  total_assists,  total_blocks,  total_steals,  minutes_played,  playerStatus);
 	}
 	
-	public void accumulate_scores()
+
+    // method for viewing with filter: viewing players with the highest number of stats for MVP leaderboard per season -- gonna clarify abt join w match
+
+	public static List<player> viewTopPlayers()
 	{
-		
+		return player.viewTopPlayers();
 	}
-    // method for viewing with filter: viewing players with the highest number of stats for MVP leaderboard per season
+
+
     // method for viewing with filter: viewing injured players
+	public static List<player> viewInjuredPlayers()
+	{
+		return player.viewInjuredPlayers();
+	}
+
 
     // match record manageemnt
 	public List <match> getAllMatches()
@@ -132,9 +150,27 @@ public class controller
 	}
 	
     // method for viewing with filter: viewing suspended coaches
-    // method for viewing with filter: viewing coaches with high monthly salaries
+
+	public static List<coach> viewSuspendedCoaches()
+	{
+		return coach.viewSuspendedCoaches();
+	}
+
+
+    // method for viewing with filter: viewing coaches with high monthly salaries (more than 70,000)
+
+   public static List<coach> viewCoachesHighSalaries()
+   {
+	return coach.viewCoachesHighSalaries();
+   }
+
+
     // method for viewing with filter: viewing coaches whose contracts started in the last 5 years
 
+   public static List<coach> viewNewCoaches()
+   {
+	return coach.viewNewCoaches();
+   }
 
 
     // reports management

@@ -409,6 +409,123 @@ public class player {
         }
 	}
 
+// view ith filter
+
+
+   public static List<player> viewTopPlayers()
+   {
+    List<player> players = new ArrayList<>();
+
+    try
+    {
+        if (conn == null || conn.isClosed())
+        {
+            if (!connectDB())
+            {
+                return players;
+            }
+        }
+    }
+    catch (SQLException e)
+    {
+        System.out.println(e.getMessage());
+        return players;
+    }
+
+    StringBuilder query = new StringBuilder("SELECT * FROM player_record_management ORDER BY total_points DESC, total_rebounds DESC, total_assists DESC, total_blocks DESC ");
+
+    try (Statement stmt = conn.createStatement(); 
+        ResultSet rs = stmt.executeQuery(query.toString()))
+    {
+        while(rs.next())
+        {
+            String statusStr = rs.getString("player_status");
+            player.PlayerStatus status = player.PlayerStatus.valueOf(statusStr);
+
+            player p = new player(
+                rs.getInt("playerID"),
+                rs.getInt("jersey_num"),
+                rs.getString("schoolCode"),
+                rs.getString("last_name"),
+                rs.getString("first_name"),
+                rs.getInt("age"),
+                rs.getInt("total_points"),
+                rs.getInt("total_rebounds"),
+                rs.getInt("total_assists"),
+                rs.getInt("total_blocks"),
+                rs.getInt("total_steals"),
+                rs.getTime("minutes_played"),
+                status
+            );
+            players.add(p);
+        }
+    }
+    catch (SQLException e)
+    {
+        System.out.println(e.getMessage());
+    }
+
+    
+    return players;
+    }
+
+   public static List<player> viewInjuredPlayers()
+   {
+    List<player> players = new ArrayList<>();
+
+    try
+    {
+        if (conn == null || conn.isClosed())
+        {
+            if (!connectDB())
+            {
+                return players;
+            }
+        }
+    }
+    catch (SQLException e)
+    {
+        System.out.println(e.getMessage());
+        return players;
+    }
+
+    StringBuilder query = new StringBuilder("SELECT * FROM player_record_management WHERE player_status = 'Injured' ");
+
+    try (Statement stmt = conn.createStatement(); 
+        ResultSet rs = stmt.executeQuery(query.toString()))
+    {
+        while(rs.next())
+        {
+            String statusStr = rs.getString("player_status");
+            player.PlayerStatus status = player.PlayerStatus.valueOf(statusStr);
+
+            player p = new player(
+                rs.getInt("playerID"),
+                rs.getInt("jersey_num"),
+                rs.getString("schoolCode"),
+                rs.getString("last_name"),
+                rs.getString("first_name"),
+                rs.getInt("age"),
+                rs.getInt("total_points"),
+                rs.getInt("total_rebounds"),
+                rs.getInt("total_assists"),
+                rs.getInt("total_blocks"),
+                rs.getInt("total_steals"),
+                rs.getTime("minutes_played"),
+                status
+            );
+            players.add(p);
+        }
+    }
+    catch (SQLException e)
+    {
+        System.out.println(e.getMessage());
+    }
+
+    
+    return players;
+    }
+
 // main
    public static void main(String[] args)
    {

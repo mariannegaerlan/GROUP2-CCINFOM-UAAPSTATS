@@ -233,11 +233,12 @@ public class coach {
 				System.out.println(rs.getDouble("monthly_salary"));
 				System.out.println(rs.getInt("career_championships"));
 				System.out.println(rs.getString("coach_status"));
+            }
 			} catch(SQLException e){
 				e.printStackTrace();
 			}
-		}
 	}
+	
 
 	public boolean coach_record_insert(int coach_ID, String schoolCode, String last_name, String first_name, LocalDate contract_start, LocalDate contract_end, double monthly_salary, int career_championships, coach_status coachStatus)
 	{
@@ -311,6 +312,182 @@ public class coach {
         }
 	}
 
+// view with filter
+
+
+
+   public static List<coach> viewSuspendedCoaches()
+   {
+    List<coach> coaches = new ArrayList<>();
+
+    try
+    {
+        if (conn == null || conn.isClosed())
+        {
+            if (!connectDB())
+            {
+                return coaches;
+            }
+        }
+    }
+    catch (SQLException e)
+    {
+        System.out.println(e.getMessage());
+        return coaches;
+    }
+
+    StringBuilder query = new StringBuilder("SELECT * FROM coach_record_management WHERE coach_status = 'Suspended' ");
+
+
+    try (Statement stmt = conn.createStatement(); 
+        ResultSet rs = stmt.executeQuery(query.toString()))
+    {
+
+        while(rs.next())
+        {
+            String statusStr = rs.getString("coach_status");
+            coach.coach_status status = coach.coach_status.valueOf(statusStr);
+            LocalDate contractStart = rs.getObject("contract_start",LocalDate.class);
+            LocalDate contractEnd = rs.getObject("contract_end", LocalDate.class);
+
+            coach c = new coach(
+                rs.getInt("coach_ID"),
+                rs.getString("schoolCode"),
+                rs.getString("last_name"),
+                rs.getString("first_name"),
+                contractStart,
+                contractEnd,
+                rs.getDouble("monthly_salary"),
+                rs.getInt("career_championships"),
+                status
+            );
+            coaches.add(c);
+        }
+    }
+    catch (SQLException e)
+    {
+        System.out.println(e.getMessage());
+    }
+
+    return coaches;
+
+   }
+
+
+   public static List<coach> viewCoachesHighSalaries()
+   {
+    List<coach> coaches = new ArrayList<>();
+
+    try
+    {
+        if (conn == null || conn.isClosed())
+        {
+            if (!connectDB())
+            {
+                return coaches;
+            }
+        }
+    }
+    catch (SQLException e)
+    {
+        System.out.println(e.getMessage());
+        return coaches;
+    }
+
+    StringBuilder query = new StringBuilder("SELECT * FROM coach_record_management WHERE monthly_salary > 70000 ORDER BY monthly_salary DESC");
+
+
+    try (Statement stmt = conn.createStatement(); 
+        ResultSet rs = stmt.executeQuery(query.toString()))
+    {
+
+        while(rs.next())
+        {
+            String statusStr = rs.getString("coach_status");
+            coach.coach_status status = coach.coach_status.valueOf(statusStr);
+            LocalDate contractStart = rs.getObject("contract_start",LocalDate.class);
+            LocalDate contractEnd = rs.getObject("contract_end", LocalDate.class);
+
+            coach c = new coach(
+                rs.getInt("coach_ID"),
+                rs.getString("schoolCode"),
+                rs.getString("last_name"),
+                rs.getString("first_name"),
+                contractStart,
+                contractEnd,
+                rs.getDouble("monthly_salary"),
+                rs.getInt("career_championships"),
+                status
+            );
+            coaches.add(c);
+        }
+    }
+    catch (SQLException e)
+    {
+        System.out.println(e.getMessage());
+    }
+
+    return coaches;
+
+   }
+
+
+   public static List<coach> viewNewCoaches()
+   {
+    List<coach> coaches = new ArrayList<>();
+
+    try
+    {
+        if (conn == null || conn.isClosed())
+        {
+            if (!connectDB())
+            {
+                return coaches;
+            }
+        }
+    }
+    catch (SQLException e)
+    {
+        System.out.println(e.getMessage());
+        return coaches;
+    }
+
+    StringBuilder query = new StringBuilder("SELECT * FROM coach_record_management WHERE contract_start >= DATE_SUB (CURDATE(), INTERVAL 5 YEAR) AND contract_start <= CURDATE()");
+
+
+    try (Statement stmt = conn.createStatement(); 
+        ResultSet rs = stmt.executeQuery(query.toString()))
+    {
+
+        while(rs.next())
+        {
+            String statusStr = rs.getString("coach_status");
+            coach.coach_status status = coach.coach_status.valueOf(statusStr);
+            LocalDate contractStart = rs.getObject("contract_start",LocalDate.class);
+            LocalDate contractEnd = rs.getObject("contract_end", LocalDate.class);
+
+            coach c = new coach(
+                rs.getInt("coach_ID"),
+                rs.getString("schoolCode"),
+                rs.getString("last_name"),
+                rs.getString("first_name"),
+                contractStart,
+                contractEnd,
+                rs.getDouble("monthly_salary"),
+                rs.getInt("career_championships"),
+                status
+            );
+            coaches.add(c);
+        }
+    }
+    catch (SQLException e)
+    {
+        System.out.println(e.getMessage());
+    }
+
+    return coaches;
+
+   }
 // main
    public static void main(String[] args)
    {

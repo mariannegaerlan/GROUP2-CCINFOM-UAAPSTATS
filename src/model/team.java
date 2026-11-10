@@ -252,6 +252,79 @@ public class team {
         }
 	}
 
+	public static List<team> viewTop3Championships()
+	{
+    	List<team> teams = new ArrayList<>();
+
+    	try{
+    		if(conn == null || conn.isClosed()){
+    			if(!connectDB()){
+    				return teams;
+    			}
+    		}
+    	}
+    	catch (SQLException e){
+    		System.out.println(e.getMessage());
+    		return teams;
+    	}
+
+    	StringBuilder query = new StringBuilder("SELECT * FROM team_record_management ORDER BY team_championships DESC LIMIT 3");
+
+    	try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query.toString())){
+    		while(rs.next()){
+    			team t = new team(
+    				rs.getString("schoolCode"),
+    				rs.getString("team_name"),
+    				rs.getInt("year"),
+    				rs.getInt("coach_ID"),
+    				rs.getInt("team_championships"));
+    			teams.add(t);
+    		}
+    	}
+    	catch (SQLException e){
+    		System.out.println(e.getMessage());
+    	}
+
+    	return teams;
+
+	}
+	public static List<team> viewNonFounders()
+	{
+    	List<team> teams = new ArrayList<>();
+
+    	try{
+    		if(conn == null || conn.isClosed()){
+    			if(!connectDB()){
+    				return teams;
+    			}
+    		}
+    	}
+    	catch (SQLException e){
+    		System.out.println(e.getMessage());
+    		return teams;
+    	}
+
+    	StringBuilder query = new StringBuilder("SELECT * FROM team_record_management WHERE year > 1938");
+
+    	try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query.toString())){
+    		while(rs.next()){
+    			team t = new team(
+    				rs.getString("schoolCode"),
+    				rs.getString("team_name"),
+    				rs.getInt("year"),
+    				rs.getInt("coach_ID"),
+    				rs.getInt("team_championships"));
+    			teams.add(t);
+    		}
+    	}
+    	catch (SQLException e){
+    		System.out.println(e.getMessage());
+    	}
+
+    	return teams;
+
+	}
+
 
     //main
 
