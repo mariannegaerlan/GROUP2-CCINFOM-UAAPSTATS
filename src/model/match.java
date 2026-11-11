@@ -175,12 +175,12 @@ public class match{
     	ResultSet rs = stmt.executeQuery(query.toString())){
     		while(rs.next()){
     			String statusStr = rs.getString("round");
-    			match.Round round = match.round.ValueOf(statusStr);
+    			Round round = Round.valueOf(statusStr);
     			LocalDate match_date = rs.getObject("match_date",LocalDate.class);
 
     			match m = new match(
     				rs.getInt("match_ID"),
-    				match_date
+    				match_date,
     				rs.getString("home_teamcode"),
     				rs.getString("away_teamcode"),
     				rs.getInt("away_score"),
@@ -196,7 +196,7 @@ public class match{
     		System.out.println(e.getMessage());
     	}
 
-    	return coaches;
+    	return matches;
     }
 
     public void match_record_view(){
@@ -204,7 +204,7 @@ public class match{
 		"FROM match_record_management";
 
 		try{
-			PreparedStatement pstmt = connection.prepareStatement(query);
+			PreparedStatement pstmt = conn.prepareStatement(query);
 
 			ResultSet rs = pstmt.executeQuery();
 
@@ -220,28 +220,31 @@ public class match{
 				System.out.println(rs.getString("round"));
 				System.out.println(rs.getInt("season"));
 			}
+		} catch(SQLException e){
+			e.printStackTrace();
 		}
 	}
 
-	public void match_record_insert(int match_ID, Date match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, String venue, Round round, int season){
-		String query = "INSERT INTO match_record_management( match_ID, match_date, home_teamcode, away_teamcode, away_score, home_score, top_scorer, venue, match_round, season) VALUES (?,?,?,?,?,?,?,?,?,?)";
+	public boolean match_record_insert(int match_ID, LocalDate match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, String venue, Round round, int season){
+		String query = "INSERT INTO match_record_management( match_ID, match_date, home_teamcode, away_teamcode, away_score, home_score, top_scorer, venue, round, season) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
 		try{
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, match_ID);
-			pstmt.setDate(2, match_date);
+			pstmt.setDate(2, java.sql.Date.valueOf(match_date));
 			pstmt.setString(3, home_teamcode);
 			pstmt.setString(4, away_teamcode);
 			pstmt.setInt(5, away_score);
 			pstmt.setInt(6, home_score);
 			pstmt.setInt(7, top_scorer);
 			pstmt.setString(8, venue);
-			pstmt.setString(9, round);
+			pstmt.setString(9, round.name());
 			pstmt.setInt(10, season);
 
 			return pstmt.executeUpdate() > 0;
 		} catch(SQLException e){
 			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -250,7 +253,7 @@ public class match{
 		String query = "DELETE FROM match_record_management WHERE match_ID = ?";
 
 		try{
-			PreparedStatement ostmt = conn.prepareStatement(query);
+			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, match_ID);
 			return pstmt.executeUpdate() > 0;
 		} catch(SQLException e){
@@ -259,21 +262,23 @@ public class match{
 		}
 	}
 
-	public boolean match_record_update(int match_ID, Date match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, String venue, Round round, int season){
-		String query = "UPDATE match_record_management SET match_ID = ?, match_date = ?m home_teamcode = ?, away_teamcode = ?, away_score = ?, home_teamcode = ?, top_scorer = ?, venue = ?, round = ?, season = ?";
-
+	public boolean coach_record_update(int match_ID, LocalDate match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, String venue, Round round, int season){
+		String query = "UPDATE match_record_management SET " +
+						"match_date = ?, home_teamcode = ?, away_teamcode = ?, " +
+						"away_score = ?, home_score = ?, top_scorer = ?, " +
+						"venue = ?, round = ?, season = ? WHERE match_ID = ?";
 		try{
 			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setInt(1, match_ID);
-			pstmt.setDate(2, match_date);
-			pstmt.setString(3, home_teamcode);
-			pstmt.setString(4, away_teamcode);
-			pstmt.setInt(5, away_score);
-			pstmt.setInt(6, home_score);
-			pstmt.setInt(7, top_scorer);
-			pstmt.setString(8, venue);
-			pstmt.setString(9, round);
-			pstmt.setInt(10, season);
+			pstmt.setDate(1, java.sql.Date.valueOf(match_date));
+			pstmt.setString(2, home_teamcode);
+			pstmt.setString(3, away_teamcode);
+			pstmt.setInt(4, away_score);
+			pstmt.setInt(5, home_score);
+			pstmt.setInt(6, top_scorer);
+			pstmt.setString(7, venue);
+			pstmt.setString(8, round.name());
+			pstmt.setInt(9, season);
+			pstmt.setInt(10, match_ID);
 
 			return pstmt.executeUpdate() > 0;
 		} catch(SQLException e){
@@ -286,7 +291,7 @@ public class match{
 
 	public static void main(String[] args){
 		connectDB();
-		List<match> matches = getAllMatches;
+		List<match> matches = getAllMatches();
 
 		for(match m: matches){
 			m.displayMatchInfo();
