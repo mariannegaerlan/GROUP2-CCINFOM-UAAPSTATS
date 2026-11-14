@@ -191,14 +191,14 @@ public class controller
 		"SUM(CASE " +
 		"WHEN (m.home_teamcode = t.schoolCode AND m.home_score < m.away_score) " +
 		"OR (m.away_teamcode = t.schoolCode AND m.away_score < m.home_score) " +
-		"THEN 1 ELSE 0 END) AS loses, " +
+		"THEN 1 ELSE 0 END) AS losses, " +
 
 		//Computes for win rate
 		"ROUND(SUM(CASE " +
 		"WHEN (m.home_teamcode = t.schoolCode AND m.home_score > m.away_score) " +
 		"OR (m.away_teamcode = t.schoolCode AND m.away_score > m.home_score) " +
 		"THEN 1 ELSE 0 END) * 100.0 / " +
-		"NULLIN(COUNT(DISTINCT m.match_ID), 0), 2) AS win_rate " +
+		"NULLIF(COUNT(DISTINCT m.match_ID), 0), 2) AS win_rate " +
 
 		//joining the tables needed
 		"FROM team_record_management t " +
@@ -241,6 +241,74 @@ public class controller
     // method for match results report
 
     // method for coach performance report
+
+	public void coach_report(int year){
+		//Select statement for name of coach, their team's name, and championships
+		String query = "SELECT " +
+		"CONCAT(c.first_name, ' ', c.last_name) AS full_name, t.team_name, t.team_championships, " +
+
+		//Getting the total number of matches
+		"COUNT(DISTINCT m.match_ID) AS total_matches, " +
+
+		//Computes for total wins
+		"SUM(CASE " +
+		"WHEN (m.home_teamcode = t.schoolCode AND m.home_score > m.away_score) " +
+		"OR (m.away_teamcode = t.schoolCode AND m.away_score > m.home_score) " +
+		"THEN 1 ELSE 0 END) AS wins, " +
+
+		//computs for total loses
+		"SUM(CASE " +
+		"WHEN (m.home_teamcode = t.schoolCode AND m.home_score < m.away_score) " +
+		"OR (m.away_teamcode = t.schoolCode AND m.away_score < m.home_score) " +
+		"THEN 1 ELSE 0 END) AS losses, " +
+
+		//Computes for win rate
+		"ROUND(SUM(CASE " +
+		"WHEN (m.home_teamcode = t.schoolCode AND m.home_score > m.away_score) " +
+		"OR (m.away_teamcode = t.schoolCode AND m.away_score > m.home_score) " +
+		"THEN 1 ELSE 0 END) * 100.0 / " +
+		"NULLIF(COUNT(DISTINCT m.match_ID), 0), 2) AS win_rate " +
+
+		//Joining the needed tables
+
+		"FROM coach_record_management c " +
+		"INNER JOIN team_record_management t " +
+		"ON c.coach_ID = t.coach_ID " +
+		"INNER JOIN match_record_management m " +
+		"ON t.schoolCode = m.home_teamcode " +
+		"OR t.schoolCode = m.away_teamcode " +
+
+		//Where condition
+
+		"WHERE YEAR(m.match_date) = ? " +
+
+		//For the aggregate functions
+		"GROUP BY t.schoolCode, t.team_name, c.first_name, c.last_name, t.team_championships";
+
+		try{
+			PreparedStatement pstmt = connection.prepareStatement(query);
+
+			pstmt.setInt(1, year);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while(rs.next()){
+				System.out.println(rs.getString("full_name"));
+				System.out.println(rs.getInt("team_championships"));
+				System.out.println(rs.getString("team_name"));
+				System.out.println(rs.getInt("total_matches"));
+				System.out.println(rs.getInt("wins"));
+				System.out.println(rs.getInt("losses"));
+				System.out.println(rs.getDouble("win_rate"));
+			}
+
+			rs.close();
+			pstmt.close();
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+}
 
     
 
