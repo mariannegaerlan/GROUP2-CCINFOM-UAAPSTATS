@@ -241,13 +241,13 @@ public class controller
 		//Select statement for match date, home and away teamcodes, and the top player name with their jersey number
 
 		String query = "SELECT " +
-		"CONCAT(p.last_name, ' ,', p.first_name) AS top_player, p.jersey_num, " +
-		"m.date, m.home_teamcode, m.away_teamcode " +
+		"CONCAT(p.last_name, ', ', p.first_name) AS top_player, p.jersey_num, " +
+		"m.match_date, m.home_teamcode, m.away_teamcode " +
 
 		//From with inner join clause
 
 		"FROM player_record_management p " +
-		"INNER JOIN match_record_management " +
+		"INNER JOIN match_record_management m " +
 		"ON m.top_scorer = p.playerID " +
 
 		//Where clause
@@ -282,6 +282,68 @@ public class controller
 		}
 	}
     // method for match results report
+
+	public void match_report(int year, int month){
+		//Select statement for date, teams, and their scores
+		String query = "SELECT " +
+		"m.match_date, home.team_name AS home_team, away.team_name AS away_team, m.home_score, m.away_score, " +
+
+		//contiuation with the winners
+		"CASE " +
+		"WHEN m.home_score > m.away_score " +
+		"THEN home.team_name " +
+		"WHEN m.away_score > m.home_score " +
+		"THEN away.team_name " +
+		"ELSE 'TIE' " +
+		"END AS winner, " +
+
+		//Contiunation with venue and round and total matches
+
+		"m.venue, m.round, " +
+		"COUNT(m.match_ID) OVER (PARTITION BY m.round) AS total_matches " +
+
+		//Joining the tables needed
+		"FROM match_record_management m " +
+		"INNER JOIN team_record_management home " +
+		"ON m.home_teamcode = home.schoolCode " +
+		"INNER JOIN team_record_management away " +
+		"ON m.away_teamcode = away.schoolCode " +
+
+		//Where clause
+
+		"WHERE YEAR(m.match_date) = ? " +
+		"AND MONTH(m.match_date) = ? " +
+
+		//Order by and grouping
+
+		"ORDER BY m.round DESC";
+
+		try{
+			PreparedStatement pstmt = connection.prepareStatement(query);
+
+			pstmt.setInt(1, year);
+			pstmt.setInt(2, month);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while(rs.next()){
+				System.out.println(rs.getDate("match_date"));
+				System.out.println(rs.getString("home_team"));
+				System.out.println(rs.getString("away_team"));
+				System.out.println(rs.getInt("home_score"));
+				System.out.println(rs.getInt("away_score"));
+				System.out.println(rs.getString("winner"));
+				System.out.println(rs.getString("venue"));
+				System.out.println(rs.getString("round"));
+				System.out.println(rs.getInt("total_matches"));
+			}
+
+			rs.close();
+			pstmt.close();
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+	} 
 
     // method for coach performance report
 
