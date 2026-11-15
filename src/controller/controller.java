@@ -237,7 +237,50 @@ public class controller
 
 
     // method for top scorer per round report
+	public void top_scorer_report(int year, int month){
+		//Select statement for match date, home and away teamcodes, and the top player name with their jersey number
 
+		String query = "SELECT " +
+		"CONCAT(p.last_name, ' ,', p.first_name) AS top_player, p.jersey_num, " +
+		"m.date, m.home_teamcode, m.away_teamcode " +
+
+		//From with inner join clause
+
+		"FROM player_record_management p " +
+		"INNER JOIN match_record_management " +
+		"ON m.top_scorer = p.playerID " +
+
+		//Where clause
+
+		"WHERE YEAR(m.match_date) = ? " +
+		"AND MONTH(m.match_date) = ? " +
+
+		//Ordering by dates in descending order
+
+		"ORDER BY m.match_date DESC";
+
+		try{
+			PreparedStatement pstmt = connection.prepareStatement(query);
+
+			pstmt.setInt(1, year);
+			pstmt.setInt(2, month);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				System.out.println(rs.getString("top_player"));
+				System.out.println(rs.getInt("jersey_num"));
+				System.out.println(rs.getDate("match_date"));
+				System.out.println(rs.getString("home_teamcode"));
+				System.out.println(rs.getString("away_teamcode"));
+			}
+
+			rs.close();
+			pstmt.close();
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
     // method for match results report
 
     // method for coach performance report
