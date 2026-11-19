@@ -1,11 +1,16 @@
 package view;
+
+import javax.swing.JPopupMenu;
+import java.util.ArrayList; 
+import javax.swing.*;
+import java.util.Collections; 
+
 // draft or placeholder lang 
 public class CoachPanel extends Theme.BaseTablePanel {
     public CoachPanel() {
         super("Coaches",
                 new String[] {"Coach ID", "School Code", "Coach Name", "Contract Start", "Contract End",
                         "Monthly Salary", "Career Championships", "Status"},
-                "Status",
                 new String[][] {
                         {"1", "ADU", "Nash Racela", "2021-12-01", "Ongoing", "₱50,000", "0", "Active"},
                         {"2", "ADMU", "Louie Alas", "2026-07-10", "Ongoing", "₱70,000", "0", "Active"},
@@ -19,4 +24,15 @@ public class CoachPanel extends Theme.BaseTablePanel {
 
                 });
     }
+     // if status is suspended 
+        protected void addCustomMenuItems(JPopupMenu menu){
+                menu.addSeparator();
+
+                JMenuItem suspendedCoach = new JMenuItem("Suspended Coaches"); 
+                suspendedCoach.addActionListener(e->{
+                        int statusCol = getColumnIndex("Status"); 
+                        setFilterRule(row->"Suspended".equalsIgnoreCase(row[statusCol]));
+                });
+                menu.add(suspendedCoach);
+        }
 }
