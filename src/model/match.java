@@ -287,6 +287,101 @@ public class match{
 		}
 	}
 
+// view with filter
+
+	public static List<match> viewCommonPlayers()
+	{
+    	List<match> matches = new ArrayList<>();
+
+    	try{
+    		if(conn == null || conn.isClosed()){
+    			if(!connectDB()){
+    				return matches;
+    			}
+    		}
+    	} catch(SQLException e){
+    		System.out.println(e.getMessage());
+    		return matches;
+    	}
+
+    	StringBuilder query = new StringBuilder("SELECT * FROM match_record_management WHERE top_scorer IN (SELECT top_scorer FROM match_record_management GROUP BY top_scorer HAVING COUNT(*) > 3);  ");
+
+    	try(Statement stmt = conn.createStatement();
+    	ResultSet rs = stmt.executeQuery(query.toString())){
+    		while(rs.next()){
+    			String statusStr = rs.getString("round");
+    			Round round = Round.valueOf(statusStr);
+    			LocalDate match_date = rs.getObject("match_date",LocalDate.class);
+
+    			match m = new match(
+    				rs.getInt("match_ID"),
+    				match_date,
+    				rs.getString("home_teamcode"),
+    				rs.getString("away_teamcode"),
+    				rs.getInt("away_score"),
+    				rs.getInt("home_score"),
+    				rs.getInt("top_scorer"),
+    				rs.getString("venue"),
+    				round,
+    				rs.getInt("season")
+    			);
+    			matches.add(m);
+    		}
+    	}catch(SQLException e){
+    		System.out.println(e.getMessage());
+    	}
+
+    	return matches;
+
+	}
+
+
+	public static List<match> viewMOAgames()
+	{
+    	List<match> matches = new ArrayList<>();
+
+    	try{
+    		if(conn == null || conn.isClosed()){
+    			if(!connectDB()){
+    				return matches;
+    			}
+    		}
+    	} catch(SQLException e){
+    		System.out.println(e.getMessage());
+    		return matches;
+    	}
+
+    	StringBuilder query = new StringBuilder("SELECT * FROM match_record_management WHERE venue = 'Mall of Asia'; ");
+
+    	try(Statement stmt = conn.createStatement();
+    	ResultSet rs = stmt.executeQuery(query.toString())){
+    		while(rs.next()){
+    			String statusStr = rs.getString("round");
+    			Round round = Round.valueOf(statusStr);
+    			LocalDate match_date = rs.getObject("match_date",LocalDate.class);
+
+    			match m = new match(
+    				rs.getInt("match_ID"),
+    				match_date,
+    				rs.getString("home_teamcode"),
+    				rs.getString("away_teamcode"),
+    				rs.getInt("away_score"),
+    				rs.getInt("home_score"),
+    				rs.getInt("top_scorer"),
+    				rs.getString("venue"),
+    				round,
+    				rs.getInt("season")
+    			);
+    			matches.add(m);
+    		}
+    	}catch(SQLException e){
+    		System.out.println(e.getMessage());
+    	}
+
+    	return matches;
+
+
+	}
 	//main
 
 	public static void main(String[] args){

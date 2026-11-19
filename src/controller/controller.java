@@ -125,7 +125,18 @@ public class controller
 	}
 
     // method for viewing with filter: viewing games with a common player that scored the most points
+
+	public static List<match> viewCommonPlayers()
+	{
+		return match.viewCommonPlayers();
+	}
+	
     // method for viewing with filter: viewing games based in MOA
+
+	public static List<match> viewMOAgames()
+	{
+		return match.viewMOAgames();
+	}
 
     // coach record management
 	public List<coach> viewCoaches()
@@ -416,4 +427,3 @@ public class controller
 }
 
     
-
