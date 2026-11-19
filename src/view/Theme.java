@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.*;
+import java.util.function.Predicate; 
 
 public class Theme {
 
@@ -84,9 +85,8 @@ public class Theme {
 
         private String entityName;
         private String[] columns;
-        private String filterColumnName;
 
-        private ArrayList<String[]> rows = new ArrayList<>();
+        protected ArrayList<String[]> rows = new ArrayList<>();
         private ArrayList<String[]> visibleRows = new ArrayList<>();
 
         private JTextField searchField = new JTextField("Search bar");
@@ -100,13 +100,14 @@ public class Theme {
         private JTable table;
 
         private String selectedFilter = "All";
+        private int selectedFilterCol = -1;
         private int page = 0;
 
-        public BaseTablePanel(String entityName, String[] columns, String filterColumnName, String[][] sampleRows) {
+        private Predicate<String[]> activeFilterRule = row ->true; 
+
+        public BaseTablePanel(String entityName, String[] columns, String[][] sampleRows) {
             this.entityName = entityName;
             this.columns = columns;
-            this.filterColumnName = filterColumnName;
-
             for (int i = 0; i < sampleRows.length; i++) {
                 this.rows.add(sampleRows[i]);
             }
@@ -144,9 +145,73 @@ public class Theme {
             // 3. Bottom Pagination Footer
             add(buildFooter(), BorderLayout.SOUTH);
 
+            //applyFilters();
+        }
+
+        protected void setFilterRule(Predicate<String[]> rule){
+            this.activeFilterRule = rule; 
+            this.page = 0; 
             applyFilters();
         }
 
+        protected int getColumnIndex(String colName){
+            if(colName == null) return -1; 
+            for(int i =0; i<columns.length; i++)
+            {
+                if (columns[i].equalsIgnoreCase(colName))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+         private void showFilterMenu() {
+            JPopupMenu menu = new JPopupMenu();
+
+            JMenuItem allItem = new JMenuItem("All");
+            allItem.addActionListener(e-> setFilterRule(row->true));
+            menu.add(allItem);
+
+            addCustomMenuItems(menu);
+
+            menu.show(filterButton,0,filterButton.getHeight()); 
+        }
+        
+        protected void addCustomMenuItems(JPopupMenu menu){
+            //left empty for child classes
+        }
+
+        private void applyFilters() {
+            visibleRows.clear();
+
+             String query = searchField.getText().trim().toLowerCase();
+            if (query.equals("search bar")) {
+                query = "";
+            }
+
+            for(String[] row : rows){
+                boolean matchesSearch = query.isEmpty();
+                if(!matchesSearch){
+                    for (String cell : row){
+                        if(cell !=null && cell.toLowerCase().contains(query)){
+                            matchesSearch = true; 
+                            break;
+                        }
+                    }
+                }
+
+                boolean matchesFilter = activeFilterRule.test(row);
+
+                if (matchesSearch && matchesFilter){
+                    visibleRows.add(row);
+                }
+            }
+
+            refreshTable();
+        }
+
+        
         private JPanel buildToolbar() {
             JPanel toolbar = new JPanel(new BorderLayout(18, 0));
             toolbar.setBackground(WHITE);
@@ -299,97 +364,7 @@ public class Theme {
             actionsCol.setCellEditor(new ActionEditor());
         }
 
-        private void showFilterMenu() {
-            JPopupMenu menu = new JPopupMenu();
-
-            JMenuItem allItem = new JMenuItem("All");
-            allItem.addActionListener(e -> {
-                selectedFilter = "All";
-                page = 0;
-                applyFilters();
-            });
-            menu.add(allItem);
-
-            // Find the column index for filtering
-            int filterCol = -1;
-            for (int i = 0; i < columns.length; i++) {
-                if (columns[i].equalsIgnoreCase(filterColumnName)) {
-                    filterCol = i;
-                    break;
-                }
-            }
-
-            if (filterCol >= 0) {
-                ArrayList<String> uniqueValues = new ArrayList<>();
-                for (int i = 0; i < rows.size(); i++) {
-                    String val = rows.get(i)[filterCol];
-                    if (val != null && !val.isEmpty() && !uniqueValues.contains(val)) {
-                        uniqueValues.add(val);
-                    }
-                }
-
-                if (!uniqueValues.isEmpty()) {
-                    menu.addSeparator();
-                }
-
-                for (int i = 0; i < uniqueValues.size(); i++) {
-                    String value = uniqueValues.get(i);
-                    JMenuItem item = new JMenuItem(value);
-                    item.addActionListener(e -> {
-                        selectedFilter = value;
-                        page = 0;
-                        applyFilters();
-                    });
-                    menu.add(item);
-                }
-            }
-
-            menu.show(filterButton, 0, filterButton.getHeight());
-        }
-
-        private void applyFilters() {
-            visibleRows.clear();
-
-            String query = searchField.getText().trim().toLowerCase();
-            if (query.equals("search bar")) {
-                query = "";
-            }
-
-            int filterCol = -1;
-            for (int i = 0; i < columns.length; i++) {
-                if (columns[i].equalsIgnoreCase(filterColumnName)) {
-                    filterCol = i;
-                    break;
-                }
-            }
-
-            for (int i = 0; i < rows.size(); i++) {
-                String[] row = rows.get(i);
-
-                // Check search text
-                boolean matchesSearch = query.isEmpty();
-                if (!matchesSearch) {
-                    for (int j = 0; j < row.length; j++) {
-                        if (row[j] != null && row[j].toLowerCase().contains(query)) {
-                            matchesSearch = true;
-                            break;
-                        }
-                    }
-                }
-
-                // Check filter selection
-                boolean matchesFilter = selectedFilter.equals("All");
-                if (!matchesFilter && filterCol >= 0 && filterCol < row.length) {
-                    matchesFilter = selectedFilter.equals(row[filterCol]);
-                }
-
-                if (matchesSearch && matchesFilter) {
-                    visibleRows.add(row);
-                }
-            }
-
-            refreshTable();
-        }
+       
 
         private void refreshTable() {
             tableModel.setRowCount(0);
