@@ -19,16 +19,19 @@ public class match{
 	private int away_score;
 	private int home_score;
 	private int top_scorer;
-	private String venue;
+	private enum Venue{
+		Araneta_Coliseum, Mall_of_Asia_Arena
+	}
 	private enum Round{
 		Round_1, Round_2, Semi_Finals, Battle_for_Third, Championship
 	}
+	private Venue venue;
 	private Round round;
 	private int season;
 
 	//Constructor
 
-	public match(int match_ID, LocalDate match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, String venue, Round round, int season){
+	public match(int match_ID, LocalDate match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, Venue venue, Round round, int season){
 		this.match_ID = match_ID;
 		this.match_date = match_date;
 		this.home_teamcode = home_teamcode;
@@ -71,7 +74,7 @@ public class match{
 		return this.top_scorer;
 	}
 
-	public String getVenue(){
+	public Venue getVenue(){
 		return this.venue;
 	}
 
@@ -113,7 +116,7 @@ public class match{
 		this.top_scorer = top_scorer;
 	}
 
-	public void setVenue(String venue){
+	public void setVenue(Venue venue){
 		this.venue = venue;
 	}
 
@@ -174,8 +177,10 @@ public class match{
     	try(Statement stmt = conn.createStatement();
     	ResultSet rs = stmt.executeQuery(query.toString())){
     		while(rs.next()){
-    			String statusStr = rs.getString("round");
-    			Round round = Round.valueOf(statusStr);
+    			String roundStr = rs.getString("round");
+				String venueStr = rs.getString("venue");
+				Venue venue = Venue.valueOf(venueStr);
+    			Round round = Round.valueOf(roundStr);
     			LocalDate match_date = rs.getObject("match_date",LocalDate.class);
 
     			match m = new match(
@@ -186,7 +191,7 @@ public class match{
     				rs.getInt("away_score"),
     				rs.getInt("home_score"),
     				rs.getInt("top_scorer"),
-    				rs.getString("venue"),
+					venue,
     				round,
     				rs.getInt("season")
     			);
@@ -309,8 +314,10 @@ public class match{
     	try(Statement stmt = conn.createStatement();
     	ResultSet rs = stmt.executeQuery(query.toString())){
     		while(rs.next()){
-    			String statusStr = rs.getString("round");
-    			Round round = Round.valueOf(statusStr);
+    			String roundStr = rs.getString("round");
+				String venueStr = rs.getString("venue");
+				Venue venue = Venue.valueOf(venueStr);
+    			Round round = Round.valueOf(roundStr);
     			LocalDate match_date = rs.getObject("match_date",LocalDate.class);
 
     			match m = new match(
@@ -321,7 +328,7 @@ public class match{
     				rs.getInt("away_score"),
     				rs.getInt("home_score"),
     				rs.getInt("top_scorer"),
-    				rs.getString("venue"),
+    				venue,
     				round,
     				rs.getInt("season")
     			);
@@ -356,8 +363,10 @@ public class match{
     	try(Statement stmt = conn.createStatement();
     	ResultSet rs = stmt.executeQuery(query.toString())){
     		while(rs.next()){
-    			String statusStr = rs.getString("round");
-    			Round round = Round.valueOf(statusStr);
+    			String roundStr = rs.getString("round");
+				String venueStr = rs.getString("venue");
+				Venue venue = Venue.valueOf(venueStr);
+    			Round round = Round.valueOf(roundStr);
     			LocalDate match_date = rs.getObject("match_date",LocalDate.class);
 
     			match m = new match(
@@ -368,7 +377,7 @@ public class match{
     				rs.getInt("away_score"),
     				rs.getInt("home_score"),
     				rs.getInt("top_scorer"),
-    				rs.getString("venue"),
+    				venue,
     				round,
     				rs.getInt("season")
     			);
