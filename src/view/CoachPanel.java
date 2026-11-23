@@ -1,6 +1,5 @@
 package view;
 
-import javax.swing.JPopupMenu;
 import java.util.ArrayList; 
 import javax.swing.*;
 import java.util.Collections; 
@@ -34,5 +33,20 @@ public class CoachPanel extends Theme.BaseTablePanel {
                         setFilterRule(row->"Suspended".equalsIgnoreCase(row[statusCol]));
                 });
                 menu.add(suspendedCoach);
+
+                JMenuItem highestSalary = new JMenuItem("Highest Salary"); 
+                highestSalary.addActionListener(e->{
+                        int salaryCol = getColumnIndex("Monthly Salary");
+                        setFilterRule(row->{
+                                try{
+                                        int salary = Integer.parseInt(row[salaryCol].trim());
+                                        return salary>70000;
+                                }
+                                catch(NumberFormatException ex){
+                                        return false;
+                                }
+                        });
+                });
+                menu.add(highestSalary);
         }
 }
