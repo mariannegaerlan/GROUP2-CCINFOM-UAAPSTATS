@@ -26,5 +26,26 @@ public class PlayerPanel extends Theme.BaseTablePanel {
         });
         menu.add(injuredPlayer);
 
+        JMenuItem activePlayer = new JMenuItem("Active Players");
+        activePlayer.addActionListener(e->{
+                int statusCol = getColumnIndex("Status");
+                setFilterRule(row->"Active".equalsIgnoreCase(row[statusCol]));
+        });
+        menu.add(activePlayer);
+
+        JMenuItem highScorers = new JMenuItem("High Scorers (10+ pts)");
+        highScorers.addActionListener(e->{
+                int pointsCol = getColumnIndex("Points");
+                setFilterRule(row->{
+                        try{
+                                int points = Integer.parseInt(row[pointsCol].trim());
+                                return points >= 10;
+                        }
+                        catch(NumberFormatException ex){
+                                return false;
+                        }
+                });
+        });
+        menu.add(highScorers);
     }
 }
