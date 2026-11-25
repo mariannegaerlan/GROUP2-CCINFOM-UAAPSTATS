@@ -47,5 +47,32 @@ public class PlayerPanel extends Theme.BaseTablePanel {
                 });
         });
         menu.add(highScorers);
+
+        JMenuItem topPlayers = new JMenuItem("MVP Leaderboard");
+        topPlayers.addActionListener(e->{
+                int[] statCols = {getColumnIndex("Points"), getColumnIndex("Rebounds"),
+                        getColumnIndex("Assists"), getColumnIndex("Blocks")};
+
+                setFilterRule(row->true, (row1, row2)->{
+                        for(int col : statCols){
+                                int stat1 = getStat(row1[col]);
+                                int stat2 = getStat(row2[col]);
+                                if(stat1 != stat2){
+                                        return Integer.compare(stat2, stat1);
+                                }
+                        }
+                        return 0;
+                });
+        });
+        menu.add(topPlayers);
+    }
+
+    private int getStat(String value){
+        try{
+                return Integer.parseInt(value.trim());
+        }
+        catch(NumberFormatException ex){
+                return 0;
+        }
     }
 }
