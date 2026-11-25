@@ -3,6 +3,7 @@ package view;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.util.function.Predicate; 
@@ -103,6 +104,7 @@ public class Theme {
         private int selectedFilterCol = -1;
         private int page = 0;
 
+        private Comparator<String[]> activeSort = null;
         private Predicate<String[]> activeFilterRule = row ->true; 
 
         public BaseTablePanel(String entityName, String[] columns, String[][] sampleRows) {
@@ -149,7 +151,12 @@ public class Theme {
         }
 
         protected void setFilterRule(Predicate<String[]> rule){
-            this.activeFilterRule = rule; 
+            setFilterRule(rule, null);
+        }
+
+        protected void setFilterRule(Predicate<String[]> rule, Comparator<String[]> sort){
+            this.activeFilterRule = rule;
+            this.activeSort = sort;
             this.page = 0; 
             applyFilters();
         }
@@ -206,6 +213,15 @@ public class Theme {
                 if (matchesSearch && matchesFilter){
                     visibleRows.add(row);
                 }
+            }
+
+            if (activeSort != null) {
+                visibleRows.sort(activeSort);
+            }
+
+            // Keep the page valid when filtering or removing records
+            if (page * PAGE_SIZE >= visibleRows.size()) {
+                page = Math.max(0, (visibleRows.size() - 1) / PAGE_SIZE);
             }
 
             refreshTable();
