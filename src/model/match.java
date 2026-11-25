@@ -19,10 +19,10 @@ public class match{
 	private int away_score;
 	private int home_score;
 	private int top_scorer;
-	private enum Venue{
+	public enum Venue{
 		Araneta_Coliseum, Mall_of_Asia_Arena
 	}
-	private enum Round{
+	public enum Round{
 		Round_1, Round_2, Semi_Finals, Battle_for_Third, Championship
 	}
 	private Venue venue;
@@ -230,7 +230,7 @@ public class match{
 		}
 	}
 
-	public boolean match_record_insert(int match_ID, LocalDate match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, String venue, Round round, int season){
+	public boolean match_record_insert(int match_ID, LocalDate match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, Venue venue, Round round, int season){
 		String query = "INSERT INTO match_record_management( match_ID, match_date, home_teamcode, away_teamcode, away_score, home_score, top_scorer, venue, round, season) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
 		try{
@@ -242,7 +242,7 @@ public class match{
 			pstmt.setInt(5, away_score);
 			pstmt.setInt(6, home_score);
 			pstmt.setInt(7, top_scorer);
-			pstmt.setString(8, venue);
+			pstmt.setString(8, venue.name());
 			pstmt.setString(9, round.name());
 			pstmt.setInt(10, season);
 
@@ -267,7 +267,7 @@ public class match{
 		}
 	}
 
-	public boolean coach_record_update(int match_ID, LocalDate match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, String venue, Round round, int season){
+	public boolean match_record_update(LocalDate match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, Venue venue, Round round, int season){
 		String query = "UPDATE match_record_management SET " +
 						"match_date = ?, home_teamcode = ?, away_teamcode = ?, " +
 						"away_score = ?, home_score = ?, top_scorer = ?, " +
@@ -280,7 +280,7 @@ public class match{
 			pstmt.setInt(4, away_score);
 			pstmt.setInt(5, home_score);
 			pstmt.setInt(6, top_scorer);
-			pstmt.setString(7, venue);
+			pstmt.setString(7, venue.name());
 			pstmt.setString(8, round.name());
 			pstmt.setInt(9, season);
 			pstmt.setInt(10, match_ID);

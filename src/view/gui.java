@@ -1,6 +1,9 @@
 package view;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import javax.swing.*;
 
 public class gui extends JFrame {
@@ -24,6 +27,7 @@ public class gui extends JFrame {
         setContentPane(root);
     }
 
+    
     private JPanel buildHeader() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(Theme.HEADER);
@@ -55,10 +59,40 @@ public class gui extends JFrame {
         // Right: Profile badge and username
         JPanel profile = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
         profile.setOpaque(false);
+        // added clickable icon
 
         JLabel name = new JLabel("Player");
         name.setFont(Theme.font(14, Font.BOLD));
         name.setForeground(Color.WHITE);
+
+        JPopupMenu profileTab = new JPopupMenu();
+
+        JMenuItem reports = new JMenuItem("Reports");
+        JMenuItem records = new JMenuItem("Records");
+        profileTab.add(reports);
+        profileTab.add(records);
+
+        profile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        profile.addMouseListener(new MouseAdapter()
+        {
+            @Override 
+            public void mouseClicked(MouseEvent e)
+            {
+                profileTab.show(profile, 0, profile.getHeight() + 5);
+            }
+        });
+
+        JMenuItem[] tabs = {reports, records};
+
+        for (JMenuItem tab:tabs)
+        {
+            tab.setFont(Theme.font(14, Font.PLAIN));
+            tab.setForeground(Color.WHITE);
+            tab.setBackground(Theme.HEADER);
+            tab.setPreferredSize(new Dimension(140, 20));
+            tab.setOpaque(true);
+        }
+
 
         profile.add(new Theme.CircleBadge(":>", new Color(135, 135, 135), 48));
         profile.add(name);
@@ -66,6 +100,8 @@ public class gui extends JFrame {
 
         return header;
     }
+
+    
 
     private JPanel buildMainContent() {
         JPanel main = new JPanel(new BorderLayout(0, 22));

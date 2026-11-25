@@ -86,7 +86,7 @@ public class controller
 	}
 	
 
-    // method for viewing with filter: viewing players with the highest number of stats for MVP leaderboard per season -- gonna clarify abt join w match
+    // method for viewing with filter: viewing players with the highest number of stats for MVP leaderboard per season 
 
 	public static List<player> viewTopPlayers()
 	{
@@ -107,7 +107,7 @@ public class controller
 		return match.getAllMatches();
 	}
 
-	public boolean match_insert(int match_ID, LocalDate match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, String venue, Round round, int season)
+	public boolean match_insert(int match_ID, LocalDate match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, match.Venue venue, match.Round round, int season)
 	{
 		match newMatch = new match(match_ID,  match_date,  home_teamcode,  away_teamcode,  away_score,  home_score,  top_scorer,  venue,  round,  season);
 		return newMatch.match_record_insert(match_ID,  match_date,  home_teamcode,  away_teamcode,  away_score,  home_score,  top_scorer,  venue,  round,  season);
@@ -118,7 +118,7 @@ public class controller
 		return match.match_record_delete(match_ID);
 	}
 
-	public boolean match_update(int match_ID, LocalDate match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, String venue, Round round, int season)
+	public boolean match_update(int match_ID, LocalDate match_date, String home_teamcode, String away_teamcode, int away_score, int home_score, int top_scorer, match.Venue venue, match.Round round, int season)
 	{
 		match newMatch = new match(match_ID,  match_date,  home_teamcode,  away_teamcode,  away_score,  home_score,  top_scorer,  venue,  round,  season);
 		return newMatch.match_record_update(match_date,  home_teamcode,  away_teamcode,  away_score,  home_score,  top_scorer,  venue,  round,  season);

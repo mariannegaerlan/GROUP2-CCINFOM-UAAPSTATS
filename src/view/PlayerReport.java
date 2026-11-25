@@ -1,0 +1,60 @@
+package view;
+
+// draft or placeholder lang
+import java.util.ArrayList;
+import javax.swing.*;
+import java.util.Collections;
+
+public class PlayerReport extends Theme.BaseTablePanel {
+    public PlayerReport() {
+        super("Players",
+                new String[] {"Top Player, Jersey number, Match Date, Home Team, Away Team"},
+                new String[][] {
+                        {"1", "9", "DLSU", "Luis Pablo", "25", "10", "2", "5", "3", "4", "00:34:10", "Active"},
+                        {"2", "11", "DLSU", "Jacob Cortez", "24", "13", "4", "5", "1", "3", "00:28:39", "Active"}
+                });
+    }
+
+    protected void addCustomMenuItems(JPopupMenu menu){
+        menu.addSeparator();
+
+        JMenuItem injuredPlayer = new JMenuItem("Injured Players");
+        injuredPlayer.addActionListener(e->{
+            int statusCol = getColumnIndex("Status");
+            setFilterRule(row->"Injured".equalsIgnoreCase(row[statusCol]));
+        });
+        menu.add(injuredPlayer);
+
+        JMenuItem topPlayers = new JMenuItem("MVP Leaderboard");
+        topPlayers.addActionListener(e->{
+            int[] statCols = {
+                getColumnIndex("Points"),
+                getColumnIndex("Rebounds"),
+                getColumnIndex("Assists"),
+                getColumnIndex("Blocks")
+            };
+
+            setFilterRule(row->true, (row1, row2)->{
+                for(int col : statCols){
+                    int stat1 = getStat(row1[col]);
+                    int stat2 = getStat(row2[col]);
+
+                    if(stat1 != stat2){
+                        return Integer.compare(stat2, stat1);
+                    }
+                }
+                return 0;
+            });
+        });
+        menu.add(topPlayers);
+    }
+
+    private int getStat(String value){
+        try{
+            return Integer.parseInt(value.trim());
+        }
+        catch(NumberFormatException ex){
+            return 0;
+        }
+    }
+}
