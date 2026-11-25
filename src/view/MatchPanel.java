@@ -25,11 +25,35 @@ public class MatchPanel extends Theme.BaseTablePanel {
     protected void addCustomMenuItems(JPopupMenu menu){
         menu.addSeparator();
 
-        JMenuItem matchVenue = new JMenuItem("MOA matches"); 
+        JMenuItem matchVenue = new JMenuItem("MOA Matches"); 
         matchVenue.addActionListener(e->{
                 int venueCol = getColumnIndex("Venue"); 
-                setFilterRule(row->"MOA".equalsIgnoreCase(row[venueCol]));
+                setFilterRule(row->row[venueCol] != null && row[venueCol].toLowerCase().contains("mall of asia"));
         });
         menu.add(matchVenue);
+
+        JMenuItem aranetaMatches = new JMenuItem("Araneta Matches");
+        aranetaMatches.addActionListener(e->{
+                int venueCol = getColumnIndex("Venue");
+                setFilterRule(row->row[venueCol] != null && row[venueCol].toLowerCase().contains("araneta"));
+        });
+        menu.add(aranetaMatches);
+
+        JMenuItem homeWins = new JMenuItem("Home Team Wins");
+        homeWins.addActionListener(e->{
+                int homeCol = getColumnIndex("Home Score");
+                int awayCol = getColumnIndex("Away Score");
+                setFilterRule(row->{
+                        try{
+                                int homeScore = Integer.parseInt(row[homeCol].trim());
+                                int awayScore = Integer.parseInt(row[awayCol].trim());
+                                return homeScore > awayScore;
+                        }
+                        catch(NumberFormatException ex){
+                                return false;
+                        }
+                });
+        });
+        menu.add(homeWins);
     }
 }
