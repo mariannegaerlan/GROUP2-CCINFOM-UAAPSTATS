@@ -1,8 +1,9 @@
 package view;
+
 // draft or placeholder lang
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import javax.swing.*;
-import java.util.Collections; 
+import java.util.Collections;
 import javax.swing.JPopupMenu;
 
 public class PlayerPanel extends Theme.BaseTablePanel {
@@ -21,58 +22,41 @@ public class PlayerPanel extends Theme.BaseTablePanel {
 
         JMenuItem injuredPlayer = new JMenuItem("Injured Players");
         injuredPlayer.addActionListener(e->{
-                int statusCol = getColumnIndex("Status"); 
-                setFilterRule(row->"Injured".equalsIgnoreCase(row[statusCol]));
+            int statusCol = getColumnIndex("Status");
+            setFilterRule(row->"Injured".equalsIgnoreCase(row[statusCol]));
         });
         menu.add(injuredPlayer);
 
-        JMenuItem activePlayer = new JMenuItem("Active Players");
-        activePlayer.addActionListener(e->{
-                int statusCol = getColumnIndex("Status");
-                setFilterRule(row->"Active".equalsIgnoreCase(row[statusCol]));
-        });
-        menu.add(activePlayer);
-
-        JMenuItem highScorers = new JMenuItem("High Scorers (10+ pts)");
-        highScorers.addActionListener(e->{
-                int pointsCol = getColumnIndex("Points");
-                setFilterRule(row->{
-                        try{
-                                int points = Integer.parseInt(row[pointsCol].trim());
-                                return points >= 10;
-                        }
-                        catch(NumberFormatException ex){
-                                return false;
-                        }
-                });
-        });
-        menu.add(highScorers);
-
         JMenuItem topPlayers = new JMenuItem("MVP Leaderboard");
         topPlayers.addActionListener(e->{
-                int[] statCols = {getColumnIndex("Points"), getColumnIndex("Rebounds"),
-                        getColumnIndex("Assists"), getColumnIndex("Blocks")};
+            int[] statCols = {
+                getColumnIndex("Points"),
+                getColumnIndex("Rebounds"),
+                getColumnIndex("Assists"),
+                getColumnIndex("Blocks")
+            };
 
-                setFilterRule(row->true, (row1, row2)->{
-                        for(int col : statCols){
-                                int stat1 = getStat(row1[col]);
-                                int stat2 = getStat(row2[col]);
-                                if(stat1 != stat2){
-                                        return Integer.compare(stat2, stat1);
-                                }
-                        }
-                        return 0;
-                });
+            setFilterRule(row->true, (row1, row2)->{
+                for(int col : statCols){
+                    int stat1 = getStat(row1[col]);
+                    int stat2 = getStat(row2[col]);
+
+                    if(stat1 != stat2){
+                        return Integer.compare(stat2, stat1);
+                    }
+                }
+                return 0;
+            });
         });
         menu.add(topPlayers);
     }
 
     private int getStat(String value){
         try{
-                return Integer.parseInt(value.trim());
+            return Integer.parseInt(value.trim());
         }
         catch(NumberFormatException ex){
-                return 0;
+            return 0;
         }
     }
 }
