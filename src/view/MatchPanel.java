@@ -5,8 +5,6 @@ import javax.swing.*;
 import java.util.Collections; 
 import javax.swing.JPopupMenu;
 
-import model.match;
-
 // draft or placeholder lang 
 public class MatchPanel extends Theme.BaseTablePanel {
     public MatchPanel() {
@@ -55,5 +53,25 @@ public class MatchPanel extends Theme.BaseTablePanel {
                 });
         });
         menu.add(homeWins);
+
+        JMenuItem commonPlayers = new JMenuItem("Common Top Scorers");
+        commonPlayers.addActionListener(e->{
+                int scorerCol = getColumnIndex("Top Scorer ID");
+                setFilterRule(row->{
+                        String scorer = row[scorerCol].trim();
+                        if(scorer.isEmpty() || scorer.equals("0")){
+                                return false;
+                        }
+
+                        int count = 0;
+                        for(String[] matchRow : rows){
+                                if(scorer.equals(matchRow[scorerCol].trim())){
+                                        count++;
+                                }
+                        }
+                        return count > 3;
+                });
+        });
+        menu.add(commonPlayers);
     }
 }
