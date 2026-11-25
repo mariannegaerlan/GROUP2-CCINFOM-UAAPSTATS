@@ -48,12 +48,34 @@ public class RecordDialog extends JDialog {
             if (columns[i].equalsIgnoreCase("Venue") || columns[i].equalsIgnoreCase("Round")) {
                 String[] options = columns[i].equalsIgnoreCase("Venue") ? venueOptions : roundOptions;
                 JComboBox<String> dropdown = new JComboBox<>(options);
+                dropdown.setEditable(false);
                 dropdown.setFont(Theme.font(13, Font.PLAIN));
                 dropdown.setPreferredSize(new Dimension(240, 34));
                 dropdown.setBackground(Theme.WHITE);
 
-                if (!initialText.isEmpty()) {
-                    dropdown.setSelectedItem(initialText);
+                if (existingValues != null) {
+                    // Match older record labels to the existing dropdown options
+                    if (columns[i].equalsIgnoreCase("Venue")) {
+                        if (initialText.equalsIgnoreCase("Mall of Asia")) {
+                            initialText = "Mall of Asia Arena";
+                        }
+                    } else {
+                        if (initialText.equalsIgnoreCase("Round1")) {
+                            initialText = "Round 1";
+                        } else if (initialText.equalsIgnoreCase("Semi-Finals")) {
+                            initialText = "Semifinals";
+                        } else if (initialText.equalsIgnoreCase("Championship")) {
+                            initialText = "Finals";
+                        }
+                    }
+
+                    dropdown.setSelectedIndex(-1);
+                    for (String option : options) {
+                        if (option.equalsIgnoreCase(initialText.trim())) {
+                            dropdown.setSelectedItem(option);
+                            break;
+                        }
+                    }
                 }
 
                 fields[i] = dropdown;
@@ -93,6 +115,14 @@ public class RecordDialog extends JDialog {
                         JOptionPane.WARNING_MESSAGE
                 );
                 return;
+            }
+
+            for (int i = 0; i < columns.length; i++) {
+                if (fields[i] instanceof JComboBox && ((JComboBox<?>) fields[i]).getSelectedItem() == null) {
+                    JOptionPane.showMessageDialog(this, "Please select a " + columns[i] + ".",
+                            "Missing Information", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
             }
 
             savedValues = new String[columns.length];
