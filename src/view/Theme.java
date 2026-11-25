@@ -145,7 +145,7 @@ public class Theme {
             // 3. Bottom Pagination Footer
             add(buildFooter(), BorderLayout.SOUTH);
 
-            //applyFilters();
+            applyFilters();
         }
 
         protected void setFilterRule(Predicate<String[]> rule){
