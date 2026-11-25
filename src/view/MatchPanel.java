@@ -1,11 +1,11 @@
 package view;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import javax.swing.*;
-import java.util.Collections; 
+import java.util.Collections;
 import javax.swing.JPopupMenu;
 
-// draft or placeholder lang 
+// draft or placeholder lang
 public class MatchPanel extends Theme.BaseTablePanel {
     public MatchPanel() {
         super("Matches",
@@ -23,54 +23,36 @@ public class MatchPanel extends Theme.BaseTablePanel {
     protected void addCustomMenuItems(JPopupMenu menu){
         menu.addSeparator();
 
-        JMenuItem matchVenue = new JMenuItem("MOA Matches"); 
+        JMenuItem matchVenue = new JMenuItem("MOA Matches");
         matchVenue.addActionListener(e->{
-                int venueCol = getColumnIndex("Venue"); 
-                setFilterRule(row->row[venueCol] != null && row[venueCol].toLowerCase().contains("mall of asia"));
+            int venueCol = getColumnIndex("Venue");
+
+            setFilterRule(row->row[venueCol] != null &&
+                row[venueCol].toLowerCase().contains("mall of asia"));
         });
         menu.add(matchVenue);
 
-        JMenuItem aranetaMatches = new JMenuItem("Araneta Matches");
-        aranetaMatches.addActionListener(e->{
-                int venueCol = getColumnIndex("Venue");
-                setFilterRule(row->row[venueCol] != null && row[venueCol].toLowerCase().contains("araneta"));
-        });
-        menu.add(aranetaMatches);
-
-        JMenuItem homeWins = new JMenuItem("Home Team Wins");
-        homeWins.addActionListener(e->{
-                int homeCol = getColumnIndex("Home Score");
-                int awayCol = getColumnIndex("Away Score");
-                setFilterRule(row->{
-                        try{
-                                int homeScore = Integer.parseInt(row[homeCol].trim());
-                                int awayScore = Integer.parseInt(row[awayCol].trim());
-                                return homeScore > awayScore;
-                        }
-                        catch(NumberFormatException ex){
-                                return false;
-                        }
-                });
-        });
-        menu.add(homeWins);
-
         JMenuItem commonPlayers = new JMenuItem("Common Top Scorers");
         commonPlayers.addActionListener(e->{
-                int scorerCol = getColumnIndex("Top Scorer ID");
-                setFilterRule(row->{
-                        String scorer = row[scorerCol].trim();
-                        if(scorer.isEmpty() || scorer.equals("0")){
-                                return false;
-                        }
+            int scorerCol = getColumnIndex("Top Scorer ID");
 
-                        int count = 0;
-                        for(String[] matchRow : rows){
-                                if(scorer.equals(matchRow[scorerCol].trim())){
-                                        count++;
-                                }
-                        }
-                        return count > 3;
-                });
+            setFilterRule(row->{
+                String scorer = row[scorerCol].trim();
+
+                if(scorer.isEmpty() || scorer.equals("0")){
+                    return false;
+                }
+
+                int count = 0;
+
+                for(String[] matchRow : rows){
+                    if(scorer.equals(matchRow[scorerCol].trim())){
+                        count++;
+                    }
+                }
+
+                return count > 3;
+            });
         });
         menu.add(commonPlayers);
     }
