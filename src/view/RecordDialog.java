@@ -5,8 +5,22 @@ import javax.swing.*;
 
 public class RecordDialog extends JDialog {
 
-    private JTextField[] textFields;
+    private JComponent[] fields;
     private String[] savedValues = null;
+
+    private String[] venueOptions = {
+            "Mall of Asia Arena",
+            "Smart Araneta Coliseum",
+            "Filoil EcoOil Centre",
+            "UST Quadricentennial Pavilion"
+    };
+
+    private String[] roundOptions = {
+            "Round 1",
+            "Round 2",
+            "Semifinals",
+            "Finals"
+    };
 
     public RecordDialog(Window parent, String title, String[] columns, String[] existingValues) {
         super(parent, title, ModalityType.APPLICATION_MODAL);
@@ -18,7 +32,7 @@ public class RecordDialog extends JDialog {
         formPanel.setBackground(Theme.WHITE);
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 25, 15, 25));
 
-        textFields = new JTextField[columns.length];
+        fields = new JComponent[columns.length];
 
         for (int i = 0; i < columns.length; i++) {
             JLabel label = new JLabel(columns[i]);
@@ -30,17 +44,34 @@ public class RecordDialog extends JDialog {
                 initialText = existingValues[i];
             }
 
-            JTextField field = new JTextField(initialText, 20);
-            field.setFont(Theme.font(13, Font.PLAIN));
-            field.setPreferredSize(new Dimension(240, 34));
-            field.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(Theme.LINE),
-                    BorderFactory.createEmptyBorder(5, 8, 5, 8)
-            ));
+            // Dropdown for Venue and Round
+            if (columns[i].equalsIgnoreCase("Venue") || columns[i].equalsIgnoreCase("Round")) {
+                String[] options = columns[i].equalsIgnoreCase("Venue") ? venueOptions : roundOptions;
+                JComboBox<String> dropdown = new JComboBox<>(options);
+                dropdown.setFont(Theme.font(13, Font.PLAIN));
+                dropdown.setPreferredSize(new Dimension(240, 34));
+                dropdown.setBackground(Theme.WHITE);
 
-            textFields[i] = field;
-            formPanel.add(label);
-            formPanel.add(field);
+                if (!initialText.isEmpty()) {
+                    dropdown.setSelectedItem(initialText);
+                }
+
+                fields[i] = dropdown;
+                formPanel.add(label);
+                formPanel.add(dropdown);
+            } else {
+                JTextField field = new JTextField(initialText, 20);
+                field.setFont(Theme.font(13, Font.PLAIN));
+                field.setPreferredSize(new Dimension(240, 34));
+                field.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Theme.LINE),
+                        BorderFactory.createEmptyBorder(5, 8, 5, 8)
+                ));
+
+                fields[i] = field;
+                formPanel.add(label);
+                formPanel.add(field);
+            }
         }
 
         // Bottom buttons panel
@@ -54,7 +85,7 @@ public class RecordDialog extends JDialog {
 
         saveButton.addActionListener(e -> {
             // Check if the first field (ID / Code) is empty
-            if (textFields[0].getText().trim().isEmpty()) {
+            if (fields[0] instanceof JTextField && ((JTextField) fields[0]).getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(
                         this,
                         "Please fill in the " + columns[0] + " field.",
@@ -66,7 +97,11 @@ public class RecordDialog extends JDialog {
 
             savedValues = new String[columns.length];
             for (int i = 0; i < columns.length; i++) {
-                savedValues[i] = textFields[i].getText().trim();
+                if (fields[i] instanceof JComboBox) {
+                    savedValues[i] = String.valueOf(((JComboBox<?>) fields[i]).getSelectedItem());
+                } else {
+                    savedValues[i] = ((JTextField) fields[i]).getText().trim();
+                }
             }
             dispose();
         });
